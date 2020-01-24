@@ -1,4 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+/.idea/
 
 # dependencies
 /node_modules
@@ -10,8 +11,11 @@
 
 # production
 /build
+/storybook-static
+/dist
 
 # misc
+Thumbs.db
 .DS_Store
 .env.local
 .env.development.local
