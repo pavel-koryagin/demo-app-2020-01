@@ -1,0 +1,18 @@
+.storybook-decorator {
+  margin: -8px;
+  padding: 8px;
+  background: #ccffcc;
+  display: flex;
+  flex-wrap: wrap;
+
+  &__item {
+    margin: 5px;
+  }
+
+  &__body {
+    position: relative; // We're the screen for 'absolute' contents
+    min-height: 1px;
+    background-color: #fff;
+    overflow: hidden;
+  }
+}
