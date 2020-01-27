@@ -1,18 +1,16 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
 import StorybookPage from '../../.storybook/StorybookPage';
 import StorybookSlot from '../../.storybook/StorybookSlot';
-import MealsList from './MealsList';
-import { mealsSample } from '../qa/samples/Meal.samples';
+import AuthRegister from './AuthRegister';
 
-storiesOf('Pages|Meals', module)
-  .add('List', () => (
+storiesOf('Pages|Auth', module)
+  .add('Register', () => (
     <StorybookPage>
       <StorybookSlot>
-        <MealsList
-          meals={mealsSample}
-          onDelete={action('onDelete')}
+        <AuthRegister
+          email="alice@example.com"
+          password="123"
         />
       </StorybookSlot>
     </StorybookPage>

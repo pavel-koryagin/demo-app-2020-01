@@ -1,4 +1,5 @@
-import { User, UserRole } from '../../model/User.model';
+import { User } from '../../model/User.model';
+import { UserRole } from '../../model/UserRole';
 
 const genericUser = {
   id: null,

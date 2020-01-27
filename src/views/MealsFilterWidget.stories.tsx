@@ -1,18 +1,16 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
 import StorybookPage from '../../.storybook/StorybookPage';
 import StorybookSlot from '../../.storybook/StorybookSlot';
-import MealsList from './MealsList';
-import { mealsSample } from '../qa/samples/Meal.samples';
+import MealsFilterWidget from './MealsFilterWidget';
+import { todayBreakfastMealSample } from '../qa/samples/Meal.samples';
 
-storiesOf('Pages|Meals', module)
-  .add('List', () => (
+storiesOf('Widgets|Meals', module)
+  .add('Filter', () => (
     <StorybookPage>
       <StorybookSlot>
-        <MealsList
-          meals={mealsSample}
-          onDelete={action('onDelete')}
+        <MealsFilterWidget
+          meal={todayBreakfastMealSample}
         />
       </StorybookSlot>
     </StorybookPage>

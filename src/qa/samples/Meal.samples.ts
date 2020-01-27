@@ -7,7 +7,7 @@ const genericMeal = {
   userId: aliceUserId,
   date: '2020-01-27',
   time: '09:00',
-  contents: 'Breakfast\nCereal\nbread\nmilk',
+  contents: 'Breakfast\nCereal\nBread\nMilk',
   calories: 450,
 };
 
@@ -39,6 +39,7 @@ export const todayBreakfastMealSample: Meal = {
 export const todayLunchMealSample: Meal = {
   ...genericMeal,
   id: 1,
+  time: '12:00',
   contents: 'Lunch\nCowboy Ribeye steak\nJuice',
   calories: 2000,
 };
