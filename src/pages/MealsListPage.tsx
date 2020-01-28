@@ -18,7 +18,7 @@ const MealsListPage: React.FC = () => {
     if (!meals || meals instanceof ErrorCapsule) {
       dispatch(loadMeals());
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Render loading and errors
   if (!meals) return <LoaderWidget />;

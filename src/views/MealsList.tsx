@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Meal, splitMealContents } from '../model/Meal.model';
+import { useDialog } from '../widgets/DialogWidget';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +35,7 @@ const MealsList: React.FC<Props> = ({
   onDelete,
 }: Props) => {
   const classes = useStyles();
+  const { confirm } = useDialog();
 
   const byDate: { [key: string]: Meal[] } = {};
   meals.forEach(meal => {
@@ -68,7 +70,10 @@ const MealsList: React.FC<Props> = ({
                   }}
                 />
                 <ListItemSecondaryAction>
-                  <IconButton edge="end" aria-label="delete" onClick={e => onDelete(id)}>
+                  <IconButton edge="end" aria-label="delete" onClick={e => confirm({
+                    text: `Delete ${title || 'the meal'}?`,
+                    onOk: () => onDelete(id),
+                  })}>
                     <DeleteIcon />
                   </IconButton>
                 </ListItemSecondaryAction>

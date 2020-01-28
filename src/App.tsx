@@ -12,37 +12,40 @@ import AuthLoginPage from './pages/AuthLoginPage';
 import AuthRegisterPage from './pages/AuthRegisterPage';
 import AuthRestorePasswordPage from './pages/AuthRestorePasswordPage';
 import AuthNewPasswordPage from './pages/AuthNewPasswordPage';
+import { DialogsProvider } from './widgets/DialogWidget';
 
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <Switch>
-          {/* Meals */}
-          <Route path="/" exact component={MealsListPage} />
-          <Route path="/meals/:id/" exact component={MealEditPage} />
+      <DialogsProvider>
+        <BrowserRouter>
+          <Switch>
+            {/* Meals */}
+            <Route path="/" exact component={MealsListPage} />
+            <Route path="/meals/:id/" exact component={MealEditPage} />
 
-          {/* Users */}
-          <Route path="/users/" exact component={UsersListPage} />
-          <Route path="/users/:id/" exact component={UserEditPage} />
+            {/* Users */}
+            <Route path="/users/" exact component={UsersListPage} />
+            <Route path="/users/:id/" exact component={UserEditPage} />
 
-          {/* Meals */}
-          <Route path="/login/" exact component={AuthLoginPage} />
-          <Route path="/register/" exact component={AuthRegisterPage} />
-          <Route path="/restore-password/" exact component={AuthRestorePasswordPage} />
-          <Route path="/restore-password/new/" exact component={AuthNewPasswordPage} />
+            {/* Meals */}
+            <Route path="/login/" exact component={AuthLoginPage} />
+            <Route path="/register/" exact component={AuthRegisterPage} />
+            <Route path="/restore-password/" exact component={AuthRestorePasswordPage} />
+            <Route path="/restore-password/new/" exact component={AuthNewPasswordPage} />
 
-          {/* 404 */}
-          <Route
-            path="/"
-            render={() => (
-              <LayoutWidget>
-                TODO: Show 404
-              </LayoutWidget>
-            )}
-          />
-        </Switch>
-      </BrowserRouter>
+            {/* 404 */}
+            <Route
+              path="/"
+              render={() => (
+                <LayoutWidget>
+                  TODO: Show 404
+                </LayoutWidget>
+              )}
+            />
+          </Switch>
+        </BrowserRouter>
+      </DialogsProvider>
     </Provider>
   );
 }
