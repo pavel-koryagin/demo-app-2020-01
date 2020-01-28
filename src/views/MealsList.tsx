@@ -44,7 +44,7 @@ const MealsList: React.FC<Props> = ({
   return (
     <List>
       {_map(byDate, (dateMeals, date) => (
-        <>
+        <React.Fragment key={date}>
           <ListSubheader>{moment(date).format('dddd, MMMM Do, YYYY')}</ListSubheader>
           {dateMeals.map(({ id, time, contents }) => {
             const { title, description } = splitMealContents(contents);
@@ -75,7 +75,7 @@ const MealsList: React.FC<Props> = ({
               </ListItem>
             );
           })}
-        </>
+        </React.Fragment>
       ))}
     </List>
   );

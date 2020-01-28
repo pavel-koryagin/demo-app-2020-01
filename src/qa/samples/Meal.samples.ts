@@ -26,19 +26,19 @@ export const yesterdayLunchMealSample: Meal = {
 
 export const yesterdayDinnerMealSample: Meal = {
   ...genericMeal,
-  id: 2,
+  id: 3,
   time: '18:00',
   contents: 'Dinner\nSusi\nJuice',
 };
 
 export const todayBreakfastMealSample: Meal = {
   ...genericMeal,
-  id: 1,
+  id: 4,
 };
 
 export const todayLunchMealSample: Meal = {
   ...genericMeal,
-  id: 1,
+  id: 5,
   time: '12:00',
   contents: 'Lunch\nCowboy Ribeye steak\nJuice',
   calories: 2000,
