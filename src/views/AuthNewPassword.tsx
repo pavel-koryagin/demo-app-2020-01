@@ -2,10 +2,10 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 
 interface Props {
-  email: string,
+  password: string,
 }
 
-const AuthNewPassword: React.FC<Props> = ({ email }: Props) => {
+const AuthNewPassword: React.FC<Props> = ({ password }: Props) => {
   return (
     <form noValidate>
       <TextField

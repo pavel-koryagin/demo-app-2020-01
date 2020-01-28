@@ -9,7 +9,7 @@ storiesOf('Pages|Auth', module)
     <StorybookPage>
       <StorybookSlot>
         <AuthNewPassword
-          email="alice@example.com"
+          password="123"
         />
       </StorybookSlot>
     </StorybookPage>
