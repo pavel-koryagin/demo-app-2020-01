@@ -1,8 +1,9 @@
 import { AsyncRequestHandler } from '../assembleServer';
 import { mealsSample } from '../../src/qa/samples/Meal.samples';
+import MealOrm from '../model/Meal.orm';
 
 export const listMealsAction: AsyncRequestHandler = async req => {
-  return mealsSample;
+  return MealOrm.findAll();
 }
 
 export const getMealAction: AsyncRequestHandler = async req => {

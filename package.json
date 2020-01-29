@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "backend": "NODE_ENV=development PORT=4000 node backend.js",
+    "backend": "NODE_ENV=development BACKEND_RESET_DATABASE=yes PORT=4000 node backend.js",
     "start": "react-scripts start",
     "storybook": "start-storybook -p 9009 -s public",
     "build": "react-scripts build",
@@ -50,6 +50,8 @@
     "react-scripts": "3.3.0",
     "redux-form": "^8.2.6",
     "redux-form-validators": "^3.3.2",
+    "sequelize": "^5.21.3",
+    "sqlite3": "^4.1.1",
     "typescript": "~3.7.2"
   },
   "devDependencies": {
