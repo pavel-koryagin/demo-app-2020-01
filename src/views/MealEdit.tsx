@@ -1,6 +1,7 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import { Meal } from '../model/Meal.model';
+import { Meal, mealMetaModel } from '../model/Meal.model';
+import Form, { FormTextField } from '../elements/Form';
 
 interface Props {
   meal: Meal,
@@ -8,7 +9,15 @@ interface Props {
 
 const MealEdit: React.FC<Props> = ({ meal }: Props) => {
   return (
-    <form noValidate>
+    <Form
+      form="mealEdit"
+      handleSubmit={() => {}}
+      initialValues={meal}
+    >
+      <FormTextField
+        name="date"
+        metaField={mealMetaModel.fields.date}
+      />
       <TextField
         label="Date"
       />
@@ -25,7 +34,7 @@ const MealEdit: React.FC<Props> = ({ meal }: Props) => {
         label="Contents and Notes"
         fullWidth
       />
-    </form>
+    </Form>
   );
 };
 

@@ -1,3 +1,5 @@
+import { MetaModel } from './modelUtils';
+
 export interface Meal {
   id: number,
   userId: number,
@@ -5,6 +7,17 @@ export interface Meal {
   time: string,
   contents: string,
   calories: number,
+}
+
+export const mealMetaModel: MetaModel<Meal> = {
+  fields: {
+    date: {
+      visualProps: {
+        label: 'Date',
+      },
+      rules: [],
+    },
+  }
 }
 
 export function splitMealContents(contents: string) {
