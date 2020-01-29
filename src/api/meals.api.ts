@@ -1,5 +1,6 @@
 import { mealsSample } from '../qa/samples/Meal.samples';
 import { Meal } from '../model/Meal.model';
+import { requestBackend } from './axios';
 
 async function emulateCall(message: string) {
   console.log('API server:', message);
@@ -7,7 +8,7 @@ async function emulateCall(message: string) {
 }
 
 export async function apiListMeals(): Promise<Meal[]> {
-  return mealsSample;
+  return requestBackend('get', '/meals/');
 }
 
 export async function apiGetMeal(id: number): Promise<Meal> {
