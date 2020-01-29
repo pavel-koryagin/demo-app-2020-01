@@ -3,12 +3,6 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { reducer as formReducer } from 'redux-form';
 import { Provider } from 'react-redux';
 
-const store = configureStore({
-  reducer: combineReducers({
-    form: formReducer,
-  }),
-});
-
 const defaultWidth = 320;
 
 export default function StorybookSlot({
@@ -17,6 +11,12 @@ export default function StorybookSlot({
   background = null,
   children,
 }) {
+  // New clean store for every new slot
+  const store = configureStore({
+    reducer: combineReducers({
+      form: formReducer,
+    }),
+  });
 
   return (
     <Provider store={store}>

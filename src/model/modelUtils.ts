@@ -1,4 +1,4 @@
-export type FieldRule<Model> = (value: any, values: Model) => string | undefined;
+export type FieldRule<Type = any, Model = {}> = (value: Type, values?: Model, props?: any, name?: any) => string | undefined;
 
 export interface MetaModel<Model> {
   fields: {
@@ -7,7 +7,7 @@ export interface MetaModel<Model> {
         label?: string,
         required?: boolean,
       },
-      rules: FieldRule<Model>[],
+      rules: FieldRule<any, Model>[],
     }
   }
 }

@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import LayoutWidget from '../widgets/LayoutWidget';
 import MealsList from '../views/MealsList';
-import { loadMeals, selectAllMeals } from '../redux/meals.redux';
+import { deleteMeal, loadMeals, selectAllMeals } from '../redux/meals.redux';
 import LoaderWidget from '../widgets/LoaderWidget';
 import ErrorCapsule from '../errors/ErrorCapsule';
 import PageLoadFailedWidget from '../widgets/PageLoadFailedWidget';
 
 const MealsListPage: React.FC = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   // Query state
   const meals = useSelector(selectAllMeals);
@@ -29,7 +31,8 @@ const MealsListPage: React.FC = () => {
     <LayoutWidget>
       <MealsList
         meals={meals}
-        onDelete={() => dispatch(() => {})}
+        onCreate={() => history.push('/meals/new/')}
+        onDelete={id => dispatch(deleteMeal(id))}
       />
     </LayoutWidget>
   );

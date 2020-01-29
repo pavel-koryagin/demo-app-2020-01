@@ -1,39 +1,58 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
 import { Meal, mealMetaModel } from '../model/Meal.model';
-import Form, { FormTextField } from '../elements/Form';
+import {
+  defineForm,
+  FormSubmit,
+  FormTextField,
+} from '../elements/Form';
+import Typography from '@material-ui/core/Typography';
 
 interface Props {
-  meal: Meal,
+  meal: Partial<Meal>,
+  onSave: (meal: Partial<Meal>) => void,
 }
 
-const MealEdit: React.FC<Props> = ({ meal }: Props) => {
+const Form = defineForm<Meal>();
+
+const MealEdit: React.FC<Props> = ({
+  meal,
+  onSave,
+}: Props) => {
+  const isCreating = meal.id == null;
+
   return (
     <Form
       form="mealEdit"
-      handleSubmit={() => {}}
-      initialValues={meal}
+      onSubmit={onSave}
+      initialValues={meal || {}}
     >
+      <Typography component="h1" variant="h4">
+        {isCreating ? 'Add Meal' : 'Update Meal'}
+      </Typography>
       <FormTextField
+        type="date"
         name="date"
         metaField={mealMetaModel.fields.date}
+        fullWidth={false}
       />
-      <TextField
-        label="Date"
+      <FormTextField
+        type="time"
+        name="time"
+        metaField={mealMetaModel.fields.time}
+        fullWidth={false}
       />
-      <TextField
-        label="Time"
-      />
-      <TextField
+      <FormTextField
+        name="calories"
+        metaField={mealMetaModel.fields.calories}
         type="number"
-        label="Calories"
-        fullWidth
+        autoFocus={isCreating}
       />
-      <TextField
+      <FormTextField
+        name="contents"
+        metaField={mealMetaModel.fields.contents}
         multiline
-        label="Contents and Notes"
-        fullWidth
       />
+      <FormSubmit>{isCreating ? 'Add' : 'Update'}</FormSubmit>
     </Form>
   );
 };

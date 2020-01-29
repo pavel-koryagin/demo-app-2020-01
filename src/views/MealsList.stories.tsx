@@ -12,6 +12,14 @@ storiesOf('Pages|Meals', module)
       <StorybookSlot>
         <MealsList
           meals={mealsSample}
+          onCreate={action('onCreate')}
+          onDelete={action('onDelete')}
+        />
+      </StorybookSlot>
+      <StorybookSlot height={400}>
+        <MealsList
+          meals={[]}
+          onCreate={action('onCreate')}
           onDelete={action('onDelete')}
         />
       </StorybookSlot>

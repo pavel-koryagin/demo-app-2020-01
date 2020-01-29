@@ -1,3 +1,4 @@
+import { required, numericality, date } from 'redux-form-validators';
 import { MetaModel } from './modelUtils';
 
 export interface Meal {
@@ -11,11 +12,35 @@ export interface Meal {
 
 export const mealMetaModel: MetaModel<Meal> = {
   fields: {
+    userId: {
+      visualProps: {
+        label: 'User',
+      },
+      rules: [required()],
+    },
     date: {
       visualProps: {
         label: 'Date',
       },
-      rules: [],
+      rules: [required(), date({ format: 'yyyy-mm-dd' })],
+    },
+    time: {
+      visualProps: {
+        label: 'Time',
+      },
+      rules: [required()],
+    },
+    contents: {
+      visualProps: {
+        label: 'Contents and Notes',
+      },
+      rules: [required()],
+    },
+    calories: {
+      visualProps: {
+        label: 'Calories',
+      },
+      rules: [required(), numericality({ int: true })],
     },
   }
 }

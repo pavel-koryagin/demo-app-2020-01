@@ -1,58 +1,46 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
 import TextField from '@material-ui/core/TextField';
 import { TextFieldProps } from '@material-ui/core/TextField/TextField';
 import { BaseFieldProps, WrappedFieldProps } from 'redux-form/lib/Field';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Button, { ButtonProps } from '@material-ui/core/Button';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    buttons: {
+      marginTop: theme.spacing(2),
+      textAlign: 'right',
+    },
+  }),
+);
 
 type FormViewProps = {
-  handleSubmit: () => void,
   className?: string,
   style?: Object,
-  children: ReactNode,
 };
 
-export const Form: React.FC<InjectedFormProps & FormViewProps> = ({
-  handleSubmit,
-  className,
-  style,
-  children,
-}: FormViewProps) => {
-  return (
-    <form
-      onSubmit={() => handleSubmit()}
-      className={className}
-      style={style}
-      noValidate
-    >
-      {children}
-    </form>
-  );
-};
+export function defineForm<FormData>() {
+  const InnerForm: React.FC<InjectedFormProps<FormData> & FormViewProps> = ({
+    handleSubmit,
+    className,
+    style,
+    children,
+  }) => {
+    return (
+      <form
+        onSubmit={handleSubmit}
+        className={className}
+        style={style}
+        noValidate
+      >
+        {children}
+      </form>
+    );
+  };
 
-export default reduxForm<{}, FormViewProps>({})(Form);
-
-// const validate = values => {
-//   const errors = {}
-//   const requiredFields = [
-//     'firstName',
-//     'lastName',
-//     'email',
-//     'favoriteColor',
-//     'notes'
-//   ]
-//   requiredFields.forEach(field => {
-//     if (!values[field]) {
-//       errors[field] = 'Required'
-//     }
-//   })
-//   if (
-//     values.email &&
-//     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-//   ) {
-//     errors.email = 'Invalid email address'
-//   }
-//   return errors
-// }
+  return reduxForm<FormData, FormViewProps>({})(InnerForm);
+}
 
 const TextFieldBinding: React.FC<TextFieldProps & WrappedFieldProps> = ({
   input,
@@ -62,10 +50,12 @@ const TextFieldBinding: React.FC<TextFieldProps & WrappedFieldProps> = ({
   <TextField
     error={touched && invalid}
     helperText={touched && error}
+    margin="normal"
+    fullWidth
     {...input}
     {...custom}
   />
-)
+);
 
 interface FieldProps {
   name: string,
@@ -110,3 +100,18 @@ export const FormTextField: React.FC<TextFieldProps & FieldProps> = ({
 //     {renderFromHelper({ touched, error })}
 //   </FormControl>
 // )
+
+export const FormSubmit: React.FC<ButtonProps> = (props) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.buttons}>
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        {...props}
+      />
+    </div>
+  );
+};
+
