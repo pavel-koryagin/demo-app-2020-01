@@ -5,11 +5,11 @@ export default class MealOrm extends Model {}
 
 MealOrm.init({
   userId: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   date: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
     allowNull: false,
   },
   time: {
@@ -21,7 +21,7 @@ MealOrm.init({
     allowNull: false,
   },
   calories: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
 }, {
