@@ -1,49 +1,26 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Provider } from 'react-redux'
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import './views/globals.scss';
 import store from './redux/store'
 import LayoutWidget from './widgets/LayoutWidget';
-import MealsListPage from './pages/MealsListPage';
-import MealEditPage from './pages/MealEditPage';
-import UsersListPage from './pages/UsersListPage';
-import UserEditPage from './pages/UserEditPage';
-import AuthLoginPage from './pages/AuthLoginPage';
-import AuthRegisterPage from './pages/AuthRegisterPage';
-import AuthRestorePasswordPage from './pages/AuthRestorePasswordPage';
-import AuthNewPasswordPage from './pages/AuthNewPasswordPage';
 import { DialogsProvider } from './widgets/DialogWidget';
+import AuthLoaderWidget from './widgets/AuthLoaderWidget';
+import LoaderWidget from './widgets/LoaderWidget';
+import AppRouter from './AppRouter';
 
 const App: React.FC = () => {
   return (
     <Provider store={store}>
       <DialogsProvider>
         <BrowserRouter>
-          <Switch>
-            {/* Meals */}
-            <Route path="/" exact component={MealsListPage} />
-            <Route path="/meals/:id/" exact component={MealEditPage} />
-
-            {/* Users */}
-            <Route path="/users/" exact component={UsersListPage} />
-            <Route path="/users/:id/" exact component={UserEditPage} />
-
-            {/* Meals */}
-            <Route path="/login/" exact component={AuthLoginPage} />
-            <Route path="/register/" exact component={AuthRegisterPage} />
-            <Route path="/restore-password/" exact component={AuthRestorePasswordPage} />
-            <Route path="/restore-password/new/" exact component={AuthNewPasswordPage} />
-
-            {/* 404 */}
-            <Route
-              path="/"
-              render={() => (
-                <LayoutWidget>
-                  TODO: Show 404
-                </LayoutWidget>
-              )}
-            />
-          </Switch>
+          <AuthLoaderWidget>
+            <LayoutWidget>
+              <Suspense fallback={<LoaderWidget />}>
+                <AppRouter />
+              </Suspense>
+            </LayoutWidget>
+          </AuthLoaderWidget>
         </BrowserRouter>
       </DialogsProvider>
     </Provider>

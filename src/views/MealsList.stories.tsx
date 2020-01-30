@@ -35,7 +35,11 @@ storiesOf('Pages|Meals', module)
         <MealsList
           meals={[]}
           filter={noMealsFilter}
-          pagination={pagination}
+          pagination={{
+            page: 0,
+            pageSize: 10,
+            totalSize: 0,
+          }}
           caloriesPerDay={{}}
           dailyTarget={carolRegularUserSample.dailyTarget as number}
           onSetPage={action('onSetPage')}

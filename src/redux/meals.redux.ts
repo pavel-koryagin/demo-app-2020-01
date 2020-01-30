@@ -19,6 +19,7 @@ import { RootState } from './rootReducer';
 import { MealsFilterDto, noMealsFilter } from '../dto/MealsFilterDto';
 import { PaginationStatusDto } from '../dto/PaginationDto';
 import { CaloriesPerDay } from '../dto/MealsListDto';
+import { RESET_USER_STATE_ACTION } from './auth.redux';
 
 type MealsState = {
   filter: MealsFilterDto,
@@ -36,7 +37,7 @@ const initialState: MealsState = {
   edit: null,
 };
 
-const issuesDisplaySlice = createSlice({
+const mealsSlice = createSlice({
   name: 'meals',
   initialState,
   reducers: {
@@ -91,7 +92,12 @@ const issuesDisplaySlice = createSlice({
         state.pagination.page = action.payload;
       }
     },
-  }
+  },
+  extraReducers: {
+    [RESET_USER_STATE_ACTION](state, action) {
+      Object.assign(state, initialState);
+    }
+  },
 });
 
 const {
@@ -101,9 +107,9 @@ const {
   onMealDeleted,
   onFilterChanged,
   onPageChanged,
-} = issuesDisplaySlice.actions;
+} = mealsSlice.actions;
 
-export default issuesDisplaySlice.reducer;
+export default mealsSlice.reducer;
 
 export const loadMeals = (
 ): AppThunk => async (dispatch, getState) => {

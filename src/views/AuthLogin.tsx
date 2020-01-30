@@ -1,23 +1,37 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
+import { defineForm, FormSubmit, FormTextField } from '../elements/Form';
+import Typography from '@material-ui/core/Typography';
+import { LoginDto, loginMetaModel } from '../dto/LoginDto';
 
 interface Props {
-  email: string,
-  password: string,
+  login: LoginDto,
+  onSubmit: (dto: LoginDto) => void,
 }
 
-const AuthLogin: React.FC<Props> = ({ email, password }: Props) => {
+const Form = defineForm<LoginDto>();
+
+const AuthLogin: React.FC<Props> = ({ login, onSubmit }: Props) => {
   return (
-    <form noValidate>
-      <TextField
-        label="Email"
-        fullWidth
+    <Form
+      form="login"
+      onSubmit={onSubmit}
+      initialValues={login}
+    >
+      <Typography component="h1" variant="h4">
+        Welcome
+      </Typography>
+      <FormTextField
+        type="email"
+        name="email"
+        metaField={loginMetaModel.fields.email}
       />
-      <TextField
-        label="Password"
-        fullWidth
+      <FormTextField
+        type="password"
+        name="password"
+        metaField={loginMetaModel.fields.password}
       />
-    </form>
+      <FormSubmit>Login</FormSubmit>
+    </Form>
   );
 };
 

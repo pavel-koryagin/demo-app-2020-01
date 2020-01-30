@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import LayoutWidget from '../widgets/LayoutWidget';
 import MealEdit from '../views/MealEdit';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -47,20 +46,18 @@ const MealEditPage: React.FC = () => {
 
   // Render
   return (
-    <LayoutWidget>
-      <MealEdit
-        meal={meal}
-        onSave={async meal => {
-          if (meal.id == null) {
-            await dispatch(createMeal(meal));
-          } else {
-            const { id, ...values } = meal;
-            await dispatch(updateMeal(id, values));
-          }
-          history.push('/');
-        }}
-      />
-    </LayoutWidget>
+    <MealEdit
+      meal={meal}
+      onSave={async meal => {
+        if (meal.id == null) {
+          await dispatch(createMeal(meal));
+        } else {
+          const { id, ...values } = meal;
+          await dispatch(updateMeal(id, values));
+        }
+        history.push('/');
+      }}
+    />
   );
 };
 

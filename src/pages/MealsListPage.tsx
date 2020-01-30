@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import LayoutWidget from '../widgets/LayoutWidget';
 import MealsList from '../views/MealsList';
 import {
   deleteMeal,
@@ -38,19 +37,17 @@ const MealsListPage: React.FC = () => {
 
   // Render
   return (
-    <LayoutWidget>
-      <MealsList
-        meals={meals}
-        filter={filter}
-        pagination={pagination}
-        caloriesPerDay={caloriesPerDay}
-        dailyTarget={2000} // TODO: Implement in auth.redux
-        onSetPage={value => dispatch(setPage(value))}
-        onFilter={value => dispatch(setFilter(value))}
-        onCreate={() => history.push('/meals/new/')}
-        onDelete={id => dispatch(deleteMeal(id))}
-      />
-    </LayoutWidget>
+    <MealsList
+      meals={meals}
+      filter={filter}
+      pagination={pagination}
+      caloriesPerDay={caloriesPerDay}
+      dailyTarget={2000} // TODO: Implement in auth.redux
+      onSetPage={value => dispatch(setPage(value))}
+      onFilter={value => dispatch(setFilter(value))}
+      onCreate={() => history.push('/meals/new/')}
+      onDelete={id => dispatch(deleteMeal(id))}
+    />
   );
 };
 

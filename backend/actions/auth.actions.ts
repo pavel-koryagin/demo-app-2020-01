@@ -18,3 +18,13 @@ export const authLoginAction: AsyncRequestHandler = async req => {
   }
   throw new ForbiddenException('Email or password do not match');
 }
+
+export const authRefreshAction: AsyncRequestHandler = async req => {
+  const auth = await Auth.getFromRequest(req);
+
+  if (auth.user) {
+    return Auth.getAuthLoginPayload(auth.user);
+  }
+
+  return null;
+}

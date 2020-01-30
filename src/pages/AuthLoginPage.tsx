@@ -1,17 +1,24 @@
 import React from 'react';
-import LayoutWidget from '../widgets/LayoutWidget';
 import AuthLogin from '../views/AuthLogin';
+import { useDispatch } from 'react-redux';
+import { login } from '../redux/auth.redux';
+import { useHistory } from 'react-router-dom';
 
 const AuthLoginPage: React.FC = () => {
-  const { email, password } = { email: 'user@example.com', password: '123' };
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   return (
-    <LayoutWidget>
-      <AuthLogin
-        email={email}
-        password={password}
-      />
-    </LayoutWidget>
+    <AuthLogin
+      login={{
+        email: '',
+        password: '',
+      }}
+      onSubmit={async value => {
+        await dispatch(login(value));
+        history.push('/');
+      }}
+    />
   );
 };
 
