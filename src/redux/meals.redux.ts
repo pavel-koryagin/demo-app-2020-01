@@ -77,7 +77,7 @@ export const loadMeals = (
 ): AppThunk => async (dispatch, getState) => {
   const { meals: { filter } } = getState();
   try {
-    const meals = await apiListMeals(filter);
+    const { items: meals } = await apiListMeals(filter);
 
     dispatch(setMeals(meals));
   } catch (err) {

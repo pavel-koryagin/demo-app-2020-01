@@ -11,6 +11,8 @@ import {
   yesterdayDinnerMealSample,
   yesterdayLunchMealSample,
 } from '../qa/samples/Meal.samples';
+import { ListDto } from '../dto/ListDto';
+import { Meal } from '../model/Meal.model';
 
 beforeEach(async () => {
   await resetDatabase();
@@ -27,8 +29,9 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    expect(data.length).toBe(mealsSample.length);
-    expect(data).toContainEqual(expect.objectContaining(mealsSample[0]));
+    const { items }: ListDto<Meal> = data;
+    expect(items.length).toBe(mealsSample.length);
+    expect(items).toContainEqual(expect.objectContaining(mealsSample[0]));
   });
 
   it('lists own for regular user', async () => {
@@ -38,8 +41,9 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    expect(data.length).toBe(5);
-    expect(data).toContainEqual(expect.objectContaining(mealsSample[0]));
+    const { items }: ListDto<Meal> = data;
+    expect(items.length).toBe(5);
+    expect(items).toContainEqual(expect.objectContaining(mealsSample[0]));
   });
 
   it('lists page 0 for regular user', async () => {
@@ -49,8 +53,14 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    expect(data.length).toBe(3);
-    expect(data).toContainEqual(expect.objectContaining(todayLunchMealSample));
+    const { items, pagination }: ListDto<Meal> = data;
+    expect(pagination).toEqual({
+      page: 0,
+      pageSize: 3,
+      totalSize: 5,
+    });
+    expect(items.length).toBe(3);
+    expect(items).toContainEqual(expect.objectContaining(todayLunchMealSample));
   });
 
   it('lists page 1 for regular user', async () => {
@@ -60,8 +70,14 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    expect(data.length).toBe(2);
-    expect(data).toContainEqual(expect.objectContaining(yesterdayBreakfastMealSample));
+    const { items, pagination }: ListDto<Meal> = data;
+    expect(pagination).toEqual({
+      page: 1,
+      pageSize: 3,
+      totalSize: 5,
+    });
+    expect(items.length).toBe(2);
+    expect(items).toContainEqual(expect.objectContaining(yesterdayBreakfastMealSample));
   });
 
   it('applies filter by date and time', async () => {
@@ -76,9 +92,10 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    expect(data.length).toBe(2);
-    expect(data).toContainEqual(expect.objectContaining(yesterdayLunchMealSample));
-    expect(data).toContainEqual(expect.objectContaining(yesterdayDinnerMealSample));
+    const { items }: ListDto<Meal> = data;
+    expect(items.length).toBe(2);
+    expect(items).toContainEqual(expect.objectContaining(yesterdayLunchMealSample));
+    expect(items).toContainEqual(expect.objectContaining(yesterdayDinnerMealSample));
   });
 
   it('applies filter by time only', async () => {
@@ -91,10 +108,11 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    expect(data.length).toBe(3);
-    expect(data).toContainEqual(expect.objectContaining(yesterdayLunchMealSample));
-    expect(data).toContainEqual(expect.objectContaining(yesterdayDinnerMealSample));
-    expect(data).toContainEqual(expect.objectContaining(todayLunchMealSample));
+    const { items }: ListDto<Meal> = data;
+    expect(items.length).toBe(3);
+    expect(items).toContainEqual(expect.objectContaining(yesterdayLunchMealSample));
+    expect(items).toContainEqual(expect.objectContaining(yesterdayDinnerMealSample));
+    expect(items).toContainEqual(expect.objectContaining(todayLunchMealSample));
   });
 
   it('applies filter by partial range', async () => {
@@ -107,9 +125,10 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    expect(data.length).toBe(2);
-    expect(data).toContainEqual(expect.objectContaining(yesterdayBreakfastMealSample));
-    expect(data).toContainEqual(expect.objectContaining(yesterdayLunchMealSample));
+    const { items }: ListDto<Meal> = data;
+    expect(items.length).toBe(2);
+    expect(items).toContainEqual(expect.objectContaining(yesterdayBreakfastMealSample));
+    expect(items).toContainEqual(expect.objectContaining(yesterdayLunchMealSample));
   });
 
 

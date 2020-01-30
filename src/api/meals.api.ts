@@ -3,13 +3,14 @@ import { mealsSample } from '../qa/samples/Meal.samples';
 import { Meal } from '../model/Meal.model';
 import { requestBackend } from './axios';
 import { MealsFilterDto } from '../dto/MealsFilterDto';
+import { ListDto } from '../dto/ListDto';
 
 async function emulateCall(message: string) {
   console.log('API server:', message);
   await new Promise(resolve => setTimeout(resolve, 1500));
 }
 
-export async function apiListMeals(filter?: MealsFilterDto): Promise<Meal[]> {
+export async function apiListMeals(filter?: MealsFilterDto): Promise<ListDto<Meal>> {
   let url = '/meals/';
   if (filter) {
     url += '?' + qs.encode(filter as any);

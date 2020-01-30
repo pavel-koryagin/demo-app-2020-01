@@ -7,6 +7,8 @@ import { requireDate, requireTime, requireUint } from '../../src/utils/routingUt
 import { MealsFilterDto } from '../../src/dto/MealsFilterDto';
 import { DEFAULT_PAGE_SIZE, PaginationParamsDto } from '../../src/dto/PaginationDto';
 import { FindOptions } from 'sequelize/types/lib/model';
+import { ListDto } from '../../src/dto/ListDto';
+import { Meal } from '../../src/model/Meal.model';
 
 function getListParams({
   dateStart,
@@ -68,7 +70,14 @@ export const listMealsAction: AsyncRequestHandler = async req => {
   options.order = [['date', 'DESC'], ['time', 'DESC']];
 
   // Query
-  return MealOrm.findAll(options);
+  return {
+    items: await MealOrm.findAll(options),
+    pagination: {
+      page,
+      pageSize,
+      totalSize: await MealOrm.count({ where }),
+    },
+  } as ListDto<Meal>;
 }
 
 export const getMealAction: AsyncRequestHandler = async req => {

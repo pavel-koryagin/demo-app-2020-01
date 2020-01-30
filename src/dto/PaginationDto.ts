@@ -3,10 +3,8 @@ export interface PaginationParamsDto {
   pageSize: number,
 }
 
-export interface PaginationStatusDto {
-  pages: number,
-  pageSize: number | null,
-  totalSize: number | null,
+export interface PaginationStatusDto extends PaginationParamsDto {
+  totalSize: number,
 }
 
 export const DEFAULT_PAGE_SIZE = 1000;
