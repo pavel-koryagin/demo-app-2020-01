@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
+  adminMode?: boolean,
   meals: Meal[],
   filter: MealsFilterDto,
   pagination: PaginationStatusDto,
@@ -63,6 +64,7 @@ interface Props {
 }
 
 const MealsList: React.FC<Props> = ({
+  adminMode,
   meals,
   filter,
   pagination,
@@ -115,7 +117,7 @@ const MealsList: React.FC<Props> = ({
                 >
                   <ListItemText
                     primary={calories}
-                    primaryTypographyProps={{
+                    primaryTypographyProps={adminMode ? {} : {
                       className: dailyTarget >= (caloriesPerDay[date] || 0) ? classes.good : classes.bad,
                     }}
                     secondary={moment(time, 'HH:mm').format('h:mm a')}

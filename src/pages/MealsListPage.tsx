@@ -6,12 +6,16 @@ import {
   deleteMeal,
   loadMeals,
   selectMealsModule,
-  setFilter, setMealsListPage,
+  setFilter,
+  setMealsListPage,
 } from '../redux/meals.redux';
 import LoaderWidget from '../widgets/LoaderWidget';
 import ErrorCapsule from '../errors/ErrorCapsule';
 import PageLoadFailedWidget from '../widgets/PageLoadFailedWidget';
 import UnexpectedCaseException from '../errors/UnexpectedCaseException';
+import { selectAuthUser } from '../redux/auth.redux';
+import { User } from '../model/User.model';
+import { UserRole } from '../model/UserRole';
 
 const MealsListPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -19,6 +23,7 @@ const MealsListPage: React.FC = () => {
 
   // Query state
   const { list: meals, filter, pagination, caloriesPerDay } = useSelector(selectMealsModule);
+  const authUser = useSelector(selectAuthUser) as User;
 
   // Require meals
   useEffect(() => {
@@ -36,13 +41,15 @@ const MealsListPage: React.FC = () => {
   }
 
   // Render
+  const adminMode = authUser.role !== UserRole.Regular;
   return (
     <MealsList
+      adminMode={adminMode}
       meals={meals}
       filter={filter}
       pagination={pagination}
       caloriesPerDay={caloriesPerDay}
-      dailyTarget={2000} // TODO: Implement in auth.redux
+      dailyTarget={authUser.dailyTarget || 0}
       onSetPage={value => dispatch(setMealsListPage(value))}
       onFilter={value => dispatch(setFilter(value))}
       onCreate={() => history.push('/meals/new/')}

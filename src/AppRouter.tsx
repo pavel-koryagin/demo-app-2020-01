@@ -45,7 +45,7 @@ const AppRouter: React.FC = () => {
   ) =>
     roles.indexOf(userRole) !== -1
       ? <Route path={path} exact component={component} />
-      : <Redirect to="/login/" />;
+      : <Route path={path} exact><Redirect to="/login/" /></Route>;
 
   return (
     <Switch>
@@ -62,6 +62,7 @@ const AppRouter: React.FC = () => {
       {/* Users */}
       {route('/users/', WrappedUsersListPage, UserRole.Manager, UserRole.Admin)}
       {route('/users/:id/', WrappedUserEditPage, UserRole.Manager, UserRole.Admin)}
+      {route('/profile/', WrappedUserEditPage, UserRole.Regular)}
 
       {/* 404 */}
       <Route

@@ -79,6 +79,9 @@ const Layout: React.FC<Props> = ({
 
           {user
             ? (<>
+              {(user.role === UserRole.Regular)
+                && <NavItem title="My Profile" url="/profile/" currentUrl={currentUrl} />
+              }
               {(user.role === UserRole.Manager || user.role === UserRole.Admin)
                 && <NavItem title="Users" url="/users/" currentUrl={currentUrl} />
               }

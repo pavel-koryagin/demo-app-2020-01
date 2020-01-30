@@ -6,6 +6,7 @@ import { defineForm, FormSelectField, FormSubmit, FormTextField } from '../eleme
 import Typography from '@material-ui/core/Typography';
 
 interface Props {
+  profileMode: boolean,
   user: Partial<User>,
   onSave: (meal: Partial<User>) => void,
 }
@@ -13,6 +14,7 @@ interface Props {
 const Form = defineForm<User>();
 
 const UserEdit: React.FC<Props> = ({
+  profileMode,
   user,
   onSave,
 }: Props) => {
@@ -25,7 +27,7 @@ const UserEdit: React.FC<Props> = ({
       initialValues={user || {}}
     >
       <Typography component="h1" variant="h4">
-        {isCreating ? 'Add User' : 'Update User'}
+        {profileMode ? 'My Profile' : (isCreating ? 'Add User' : 'Update User')}
       </Typography>
       {isCreating
         ? (
@@ -37,7 +39,7 @@ const UserEdit: React.FC<Props> = ({
         )
         : (
           <Typography variant="body1">
-            {user.email} &bull; {getUserRoleTitle(user.role as UserRole)}
+            {user.email}{!profileMode && ' • ' + getUserRoleTitle(user.role as UserRole)}
           </Typography>
         )
       }

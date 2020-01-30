@@ -14,7 +14,7 @@ import {
 } from '../api/users.api';
 import { RootState } from './rootReducer';
 import { PaginationStatusDto } from '../dto/PaginationDto';
-import { RESET_USER_STATE_ACTION } from './auth.redux';
+import { updateCurrentUser, RESET_USER_STATE_ACTION } from './auth.redux';
 import { UserRole } from '../model/UserRole';
 
 type UsersState = {
@@ -147,10 +147,14 @@ export const createUser = (
 export const updateUser = (
   id: number,
   values: Partial<User>
-): AppThunk => async dispatch => {
+): AppThunk => async (dispatch, getState) => {
   // TODO: Add action progress and error indication
   const user = await apiUpdateUser(id, values);
   dispatch(onUserUpdated(user));
+  const { auth: { user: authUser } } = getState();
+  if (authUser && authUser.id === user.id) {
+    dispatch(updateCurrentUser(user));
+  }
 };
 
 export const deleteUser = (

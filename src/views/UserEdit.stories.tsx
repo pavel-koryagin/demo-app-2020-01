@@ -16,24 +16,35 @@ storiesOf('Pages|Users', module)
     <StorybookPage>
       <StorybookSlot>
         <UserEdit
+          profileMode={false}
           user={carolRegularUserSample}
           onSave={action('onSave')}
         />
       </StorybookSlot>
       <StorybookSlot>
         <UserEdit
+          profileMode={true}
+          user={carolRegularUserSample}
+          onSave={action('onSave')}
+        />
+      </StorybookSlot>
+      <StorybookSlot>
+        <UserEdit
+          profileMode={false}
           user={bobManagerUserSample}
           onSave={action('onSave')}
         />
       </StorybookSlot>
       <StorybookSlot>
         <UserEdit
+          profileMode={false}
           user={aliceAdminUserSample}
           onSave={action('onSave')}
         />
       </StorybookSlot>
       <StorybookSlot>
         <UserEdit
+          profileMode={false}
           user={{
             role: UserRole.Regular,
           }}
