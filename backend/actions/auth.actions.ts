@@ -3,6 +3,7 @@ import UserOrm from '../model/UserOrm';
 import Auth from '../utils/Auth';
 import AuthLoginDto from '../dto/AuthLoginDto';
 import ForbiddenException from '../../src/errors/ForbiddenException';
+import { UserRole } from '../../src/model/UserRole';
 
 export const authLoginAction: AsyncRequestHandler = async req => {
   // Input
@@ -17,6 +18,23 @@ export const authLoginAction: AsyncRequestHandler = async req => {
     return Auth.getAuthLoginPayload(foundUser);
   }
   throw new ForbiddenException('Email or password do not match');
+}
+
+export const authRegisterAction: AsyncRequestHandler = async req => {
+  // Populate ORM
+  const user = new UserOrm();
+  user.email = req.body.email;
+  user.firstName = req.body.firstName;
+  user.lastName = req.body.lastName;
+  user.setPassword(String(req.body.password || ''));
+  // TODO: Move to validators
+  user.dailyTarget = 2000;
+  user.role = UserRole.Regular;
+
+  // Save
+  await user.save();
+
+  return Auth.getAuthLoginPayload(user);
 }
 
 export const authRefreshAction: AsyncRequestHandler = async req => {

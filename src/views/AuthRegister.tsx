@@ -1,27 +1,50 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
+import { RegisterDto, registerMetaModel } from '../dto/RegisterDto';
+import { defineForm, FormSubmit, FormTextField } from '../elements/Form';
+import Typography from '@material-ui/core/Typography';
 
 interface Props {
-  email: string,
-  password: string,
+  register: RegisterDto,
+  onSubmit: (dto: RegisterDto) => void,
 }
 
-const AuthRegister: React.FC<Props> = ({ email, password }: Props) => {
+const Form = defineForm<RegisterDto>();
+
+const AuthRegister: React.FC<Props> = ({ register, onSubmit }: Props) => {
   return (
-    <form noValidate>
-      <TextField
-        label="Email"
-        fullWidth
+    <Form
+      form="register"
+      onSubmit={onSubmit}
+      initialValues={register}
+    >
+      <Typography component="h1" variant="h4">
+        Sign Up
+      </Typography>
+      <FormTextField
+        type="email"
+        name="email"
+        metaField={registerMetaModel.fields.email}
       />
-      <TextField
-        label="Password"
-        fullWidth
+      <FormTextField
+        type="password"
+        name="password"
+        metaField={registerMetaModel.fields.password}
       />
-      <TextField
-        label="Confirm Password"
-        fullWidth
+      <FormTextField
+        type="password"
+        name="confirmPassword"
+        metaField={registerMetaModel.fields.confirmPassword}
       />
-    </form>
+      <FormTextField
+        name="firstName"
+        metaField={registerMetaModel.fields.firstName}
+      />
+      <FormTextField
+        name="lastName"
+        metaField={registerMetaModel.fields.lastName}
+      />
+      <FormSubmit>Login</FormSubmit>
+    </Form>
   );
 };
 

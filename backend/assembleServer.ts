@@ -3,7 +3,7 @@ import express, { Express, RequestHandler, NextFunction, Request, Response } fro
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { createMealAction, deleteMealAction, getMealAction, listMealsAction, updateMealAction } from './actions/meal.actions';
-import { authLoginAction, authRefreshAction } from './actions/auth.actions';
+import { authLoginAction, authRefreshAction, authRegisterAction } from './actions/auth.actions';
 import UnexpectedCaseException from '../src/errors/UnexpectedCaseException';
 import BadRequestException from '../src/errors/BadRequestException';
 import { ValidationError } from 'sequelize';
@@ -74,6 +74,7 @@ export function assembleServer(): Express {
 
   // Bind actions
   app.post('/auth/login/', wrapAsyncAction(authLoginAction));
+  app.post('/auth/register/', wrapAsyncAction(authRegisterAction));
   app.get('/auth/refresh/', wrapAsyncAction(authRefreshAction));
 
   app.get('/meals/', wrapAsyncAction(listMealsAction));

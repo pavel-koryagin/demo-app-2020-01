@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppDispatch, AppThunk } from './store';
-import { apiLogin, apiRefresh } from '../api/auth.api';
+import { apiLogin, apiRefresh, apiRegister } from '../api/auth.api';
 import { User } from '../model/User.model';
 import { LoginDto } from '../dto/LoginDto';
 import { AuthPayloadDto } from '../dto/AuthPayloadDto';
 import { setJwt } from '../api/axios';
 import { RootState } from './rootReducer';
+import { RegisterDto } from '../dto/RegisterDto';
 
 export const RESET_USER_STATE_ACTION = 'RESET_USER_STATE';
 
@@ -66,6 +67,15 @@ export const login = (
   values: LoginDto
 ): AppThunk => async dispatch => {
   const payload = await apiLogin(values);
+  saveToken(payload.token);
+  dispatch(setUser(payload));
+  dispatch(resetUserState());
+};
+
+export const register = (
+  values: RegisterDto
+): AppThunk => async dispatch => {
+  const payload = await apiRegister(values);
   saveToken(payload.token);
   dispatch(setUser(payload));
   dispatch(resetUserState());
