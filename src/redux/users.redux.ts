@@ -15,6 +15,7 @@ import {
 import { RootState } from './rootReducer';
 import { PaginationStatusDto } from '../dto/PaginationDto';
 import { RESET_USER_STATE_ACTION } from './auth.redux';
+import { UserRole } from '../model/UserRole';
 
 type UsersState = {
   pagination: PaginationStatusDto | null,
@@ -115,7 +116,7 @@ export const selectUsersModule = (state: RootState) => state.users;
 
 export const resetUserToEdit = () => setUserToEdit(null);
 
-export const setNewUserToEdit = () => setUserToEdit({});
+export const setNewUserToEdit = () => setUserToEdit({ role: UserRole.Regular });
 
 export const loadUserToEdit = (
   id: number

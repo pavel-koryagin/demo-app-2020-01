@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import UsersList from '../views/UsersList';
-import { usersSample } from '../qa/samples/User.samples';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import ErrorCapsule from '../errors/ErrorCapsule';
@@ -33,7 +32,7 @@ const UsersListPage: React.FC = () => {
   return (
     <UsersList
       pagination={pagination}
-      users={usersSample}
+      users={users}
       onSetPage={value => dispatch(setUsersListPage(value))}
       onCreate={() => history.push('/users/new/')}
       onDelete={id => dispatch(deleteUser(id))}

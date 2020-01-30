@@ -1,10 +1,14 @@
 import React from 'react';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
 import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import Select, { SelectProps } from '@material-ui/core/Select/Select';
+import InputLabel from '@material-ui/core/InputLabel';
 import { TextFieldProps } from '@material-ui/core/TextField/TextField';
-import { BaseFieldProps, WrappedFieldProps } from 'redux-form/lib/Field';
+import { BaseFieldProps, WrappedFieldInputProps, WrappedFieldProps } from 'redux-form/lib/Field';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button, { ButtonProps } from '@material-ui/core/Button';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,25 +46,26 @@ export function defineForm<FormData>() {
   return reduxForm<FormData, FormViewProps>({})(InnerForm);
 }
 
+interface FieldProps {
+  name: string,
+  metaField: any,
+}
+
 const TextFieldBinding: React.FC<TextFieldProps & WrappedFieldProps> = ({
   input,
-  meta: { touched, invalid, error },
+  meta: { touched, invalid, error, form },
   ...custom
 }) => (
   <TextField
     error={touched && invalid}
     helperText={touched && error}
+    id={`form-${form}-${input.name}`}
     margin="normal"
     fullWidth
     {...input}
     {...custom}
   />
 );
-
-interface FieldProps {
-  name: string,
-  metaField: any,
-}
 
 export const FormTextField: React.FC<TextFieldProps & FieldProps> = ({
   metaField: { visualProps, rules },
@@ -77,29 +82,46 @@ export const FormTextField: React.FC<TextFieldProps & FieldProps> = ({
   );
 };
 
-// const renderSelectField = ({
-//   input,
-//   label,
-//   meta: { touched, error },
-//   children,
-//   ...custom
-// }) => (
-//   <FormControl error={touched && error}>
-//     <InputLabel htmlFor="age-native-simple">Age</InputLabel>
-//     <Select
-//       native
-//       {...input}
-//       {...custom}
-//       inputProps={{
-//         name: 'age',
-//         id: 'age-native-simple'
-//       }}
-//     >
-//       {children}
-//     </Select>
-//     {renderFromHelper({ touched, error })}
-//   </FormControl>
-// )
+const SelectFieldBinding: React.FC<SelectProps & WrappedFieldProps> = ({
+  input,
+  meta: { touched, invalid, error, form },
+  children,
+  ...custom
+}) => (
+  <FormControl
+    error={touched && error}
+    fullWidth
+    margin="normal"
+  >
+    <InputLabel htmlFor={`form-${form}-${input.name}`}>{custom.label}</InputLabel>
+    <Select
+      {...input as WrappedFieldInputProps}
+      {...custom}
+      inputProps={{
+        name: input.name,
+        id: `form-${form}-${input.name}`
+      }}
+    >
+      {children}
+    </Select>
+    {(touched || error) && <FormHelperText>{touched && error}</FormHelperText>}
+  </FormControl>
+);
+
+export const FormSelectField: React.FC<SelectProps & FieldProps> = ({
+  metaField: { visualProps, rules },
+  name,
+  ...props
+}) => {
+  return (
+    <Field<BaseFieldProps<SelectProps>>
+      name={name}
+      component={SelectFieldBinding}
+      props={{...visualProps, ...props}}
+      validate={rules}
+    />
+  );
+};
 
 export const FormSubmit: React.FC<ButtonProps> = (props) => {
   const classes = useStyles();

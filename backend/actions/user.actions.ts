@@ -10,6 +10,7 @@ import NotFoundException from '../../src/errors/NotFoundException';
 import ForbiddenException from '../../src/errors/ForbiddenException';
 import { ListDto } from '../../src/dto/ListDto';
 import { User } from '../../src/model/User.model';
+import { UserRole } from '../../src/model/UserRole';
 
 function getListParams({
   page,
@@ -95,7 +96,12 @@ export const createUserAction: AsyncRequestHandler = async req => {
   const user = new UserOrm();
   user.set(filterInput(auth, req.body));
   user.email = req.body.email;
-  user.setPassword(req.body.password);
+  user.setPassword(String(req.body.password || ''));
+
+  // TODO: Move to validators
+  if (user.role === UserRole.Regular && user.dailyTarget == null) {
+    user.dailyTarget = 2000;
+  }
 
   // Save
   await user.save();
@@ -108,8 +114,9 @@ export const updateUserAction: AsyncRequestHandler = async req => {
 
   // Populate ORM
   user.set(filterInput(auth, req.body));
-
-  // TODO: crypt password
+  if (req.body.password) {
+    user.setPassword(String(req.body.password));
+  }
 
   // Save
   await user.save();

@@ -1,50 +1,78 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import { User } from '../model/User.model';
+import { User, userMetaModel } from '../model/User.model';
 import { getUserRoleTitle, UserRole } from '../model/UserRole';
+import { defineForm, FormSelectField, FormSubmit, FormTextField } from '../elements/Form';
+import Typography from '@material-ui/core/Typography';
 
 interface Props {
-  user: User,
+  user: Partial<User>,
+  onSave: (meal: Partial<User>) => void,
 }
 
-const UserEdit: React.FC<Props> = ({ user }: Props) => {
+const Form = defineForm<User>();
+
+const UserEdit: React.FC<Props> = ({
+  user,
+  onSave,
+}: Props) => {
+  const isCreating = user.id == null;
+
   return (
-    <form noValidate>
-      <TextField
-        label="Email"
-        fullWidth
+    <Form
+      form="userEdit"
+      onSubmit={onSave}
+      initialValues={user || {}}
+    >
+      <Typography component="h1" variant="h4">
+        {isCreating ? 'Add User' : 'Update User'}
+      </Typography>
+      {isCreating
+        ? (
+          <FormTextField
+            type="email"
+            name="email"
+            metaField={userMetaModel.fields.email}
+          />
+        )
+        : (
+          <Typography variant="body1">
+            {user.email} &bull; {getUserRoleTitle(user.role as UserRole)}
+          </Typography>
+        )
+      }
+      <FormTextField
+        name="firstName"
+        metaField={userMetaModel.fields.firstName}
       />
-      <TextField
-        label="First Name"
-        fullWidth
+      <FormTextField
+        name="lastName"
+        metaField={userMetaModel.fields.lastName}
       />
-      <TextField
-        label="Last Name"
-        fullWidth
+      <FormTextField
+        type="password"
+        name="password"
+        metaField={userMetaModel.fields.password}
       />
-      <TextField
-        type="number"
-        label="Daily Calories Target"
-        fullWidth
-      />
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Role</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          // value={age}
-          // onChange={handleChange}
+      {isCreating && (
+        <FormSelectField
+          name="role"
+          metaField={userMetaModel.fields.role}
         >
           <MenuItem value={UserRole.Regular}>{getUserRoleTitle(UserRole.Regular)}</MenuItem>
           <MenuItem value={UserRole.Manager}>{getUserRoleTitle(UserRole.Manager)}</MenuItem>
           <MenuItem value={UserRole.Admin}>{getUserRoleTitle(UserRole.Admin)}</MenuItem>
-        </Select>
-      </FormControl>
-    </form>
+        </FormSelectField>
+      )}
+      {(!isCreating && user.role === UserRole.Regular) && (
+        <FormTextField
+          type="number"
+          name="dailyTarget"
+          metaField={userMetaModel.fields.dailyTarget}
+        />
+      )}
+      <FormSubmit>{isCreating ? 'Add' : 'Update'}</FormSubmit>
+    </Form>
   );
 };
 
