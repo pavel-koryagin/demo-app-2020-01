@@ -44,6 +44,15 @@ export const carolRegularUserSample: User = {
   dailyTarget: 2000,
 };
 
+export const danRegularUserSample: User = {
+  ...genericUser,
+  id: 4,
+  email: 'dan@example.com',
+  firstName: 'Dan',
+  lastName: 'User',
+  dailyTarget: 3000,
+};
+
 export const usersSample = [
   aliceAdminUserSample,
   bobManagerUserSample,

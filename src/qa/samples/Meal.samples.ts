@@ -1,10 +1,11 @@
 import { Meal } from '../../model/Meal.model';
 
-const aliceUserId = 1;
+const carolRegularUserId = 3;
+const danRegularUserId = 4;
 
 const genericMeal = {
   id: null,
-  userId: aliceUserId,
+  userId: carolRegularUserId,
   date: '2020-01-27',
   time: '09:00',
   contents: 'Breakfast\nCereal\nBread\nMilk',
@@ -51,5 +52,10 @@ export const mealsSample = [
   yesterdayLunchMealSample,
   yesterdayDinnerMealSample,
   todayBreakfastMealSample,
-  todayLunchMealSample
+  todayLunchMealSample,
+  {
+    ...genericMeal,
+    id: 6,
+    userId: danRegularUserId,
+  },
 ];

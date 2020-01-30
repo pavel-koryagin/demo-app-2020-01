@@ -75,6 +75,12 @@ export function assembleServer(): Express {
   app.put('/meals/:id/', wrapAsyncAction(updateMealAction));
   app.delete('/meals/:id/', wrapAsyncAction(deleteMealAction));
 
+  // Add terminating 404
+  app.use((req, res) => {
+    res.status(404);
+    res.send({ error: 'NOT_FOUND', message: `There is no action ${req.method} at ${req.url}` });
+  });
+
   return app;
 }
 

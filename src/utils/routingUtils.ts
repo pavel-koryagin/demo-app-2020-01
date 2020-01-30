@@ -9,3 +9,23 @@ export function requireId(value: string | undefined): number {
   }
   return Number(value);
 }
+
+export function requireDate(value: string | undefined): string {
+  if (!value) {
+    throw new BadRequestException('Missing required date parameter');
+  }
+  if (!/^\d\d\d\d-\d\d-\d\d$/.test(value)) {
+    throw new BadRequestException('Incorrect date parameter value');
+  }
+  return value;
+}
+
+export function requireTime(value: string | undefined): string {
+  if (!value) {
+    throw new BadRequestException('Missing required time parameter');
+  }
+  if (!/^\d\d:\d\d$/.test(value)) {
+    throw new BadRequestException('Incorrect time parameter value');
+  }
+  return value;
+}
