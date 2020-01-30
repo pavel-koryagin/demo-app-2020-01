@@ -1,13 +1,16 @@
+import { Request } from 'express';
 import Sequelize, { Op } from 'sequelize';
+import _pick from 'lodash/pick';
 import { AsyncRequestHandler } from '../assembleServer';
-import { mealsSample } from '../../src/qa/samples/Meal.samples';
 import MealOrm from '../model/MealOrm';
 import Auth from '../utils/Auth';
-import { requireDate, requireTime, requireUint } from '../../src/utils/routingUtils';
+import { requireDate, requireId, requireTime, requireUint } from '../../src/utils/routingUtils';
 import { MealsFilterDto } from '../../src/dto/MealsFilterDto';
 import { DEFAULT_PAGE_SIZE, PaginationParamsDto } from '../../src/dto/PaginationDto';
 import { FindOptions } from 'sequelize/types/lib/model';
 import { CaloriesPerDay, MealsListDto } from '../../src/dto/MealsListDto';
+import NotFoundException from '../../src/errors/NotFoundException';
+import ForbiddenException from '../../src/errors/ForbiddenException';
 
 function getListParams({
   dateStart,
@@ -69,7 +72,7 @@ export const listMealsAction: AsyncRequestHandler = async req => {
   options.limit = pageSize;
 
   // Apply order
-  options.order = [['date', 'DESC'], ['time', 'DESC']];
+  options.order = [['date', 'DESC'], ['time', 'DESC'], ['id', 'DESC']];
 
   // Query
   const result: MealsListDto = {
@@ -107,18 +110,74 @@ export const listMealsAction: AsyncRequestHandler = async req => {
   return result;
 }
 
+async function getRecordProlog(req: Request) {
+  const auth = await Auth.getFromRequest(req);
+  auth.requireRegularUserOrAdmin();
+
+  // Decode and sanitize params
+  const id = requireId(req.params.id);
+
+  // Query result
+  const meal = await MealOrm.findByPk(id);
+  if (!meal) {
+    throw new NotFoundException();
+  }
+
+  // Check auth limits
+  if (meal.userId !== auth.id) {
+    throw new ForbiddenException();
+  }
+
+  return { meal, auth };
+}
+
 export const getMealAction: AsyncRequestHandler = async req => {
-  return mealsSample[0];
+  const { meal } = await getRecordProlog(req);
+  return meal;
 }
 
 export const createMealAction: AsyncRequestHandler = async req => {
-  return mealsSample[0];
+  const auth = await Auth.getFromRequest(req);
+  auth.requireRegularUserOrAdmin();
+
+  // Populate ORM
+  const meal = new MealOrm();
+  meal.set(req.body);
+
+  // Override auth-related attributes
+  if (!auth.isAdmin()) {
+    meal.userId = auth.id as number;
+  }
+
+  // Save
+  await meal.save();
+
+  return meal;
 }
 
 export const updateMealAction: AsyncRequestHandler = async req => {
-  return mealsSample[0];
+  const { meal, auth } = await getRecordProlog(req);
+
+  // Populate ORM
+  meal.set(_pick(req.body, [
+    'date',
+    'time',
+    'contents',
+    'calories',
+    ...(auth.isAdmin() ? ['userId'] : []),
+  ]));
+
+  // Save
+  await meal.save();
+
+  return meal;
 }
 
 export const deleteMealAction: AsyncRequestHandler = async req => {
+  const { meal } = await getRecordProlog(req);
 
+  // Delete
+  await meal.destroy();
+
+  return {};
 }

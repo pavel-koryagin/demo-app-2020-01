@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import moment from 'moment';
+import _find from 'lodash/find';
 import _filter from 'lodash/filter';
+import _mapValues from 'lodash/mapValues';
 import _isPlainObject from 'lodash/isPlainObject';
 import _isEqual from 'lodash/isEqual';
 import { AppThunk } from './store';
@@ -50,14 +52,17 @@ const issuesDisplaySlice = createSlice({
     setMealToEdit(state, action: PayloadAction<Partial<Meal> | ErrorCapsule | null>) {
       state.edit = action.payload;
     },
-    onMealCreated(state, action: PayloadAction<Meal>) {
-      if (Array.isArray(state.list)) {
-        state.list = [...state.list, action.payload];
-      }
-    },
     onMealUpdated(state, action: PayloadAction<Meal>) {
       if (Array.isArray(state.list)) {
-        state.list = state.list.map(item => item.id !== action.payload.id ? item : action.payload);
+        const prevMeal = _find(state.list, ({ id }) => id === action.payload.id);
+        if (prevMeal) {
+          const newMeal = action.payload;
+          state.list = state.list.map(item => item !== prevMeal ? item : newMeal);
+          state.caloriesPerDay = _mapValues(
+            state.caloriesPerDay,
+            (value, date) => (date === prevMeal.date ? value - prevMeal.calories + newMeal.calories : value),
+          );
+        }
       }
       if (_isPlainObject(state.edit) && (state.edit as Meal).id === action.payload.id) {
         state.edit = action.payload;
@@ -65,7 +70,14 @@ const issuesDisplaySlice = createSlice({
     },
     onMealDeleted(state, action: PayloadAction<number>) {
       if (Array.isArray(state.list)) {
-        state.list = _filter(state.list, ({ id }) => id !== action.payload);
+        const prevMeal = _find(state.list, ({ id }) => id === action.payload)
+        if (prevMeal) {
+          state.list = _filter(state.list, item => item !== prevMeal);
+          state.caloriesPerDay = _mapValues(
+            state.caloriesPerDay,
+            (value, date) => (date === prevMeal.date ? value - prevMeal.calories : value),
+          );
+        }
       }
     },
     onFilterChanged(state, action: PayloadAction<MealsFilterDto>) {
@@ -85,7 +97,6 @@ const issuesDisplaySlice = createSlice({
 const {
   setMeals,
   setMealToEdit,
-  onMealCreated,
   onMealUpdated,
   onMealDeleted,
   onFilterChanged,
@@ -150,8 +161,9 @@ export const createMeal = (
   values: Partial<Meal>
 ): AppThunk => async dispatch => {
   // TODO: Add action progress and error indication
-  const meal = await apiCreateMeal(values);
-  dispatch(onMealCreated(meal));
+  await apiCreateMeal(values);
+  // It affects pagination, so let's simplify, WAS: // dispatch(onMealCreated(meal));
+  dispatch(loadMeals());
 };
 
 export const updateMeal = (

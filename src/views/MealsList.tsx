@@ -121,7 +121,7 @@ const MealsList: React.FC<Props> = ({
                   />
                   <ListItemText
                     primary={title}
-                    secondary={description + ' ' + dailyTarget + ' ' + caloriesPerDay[date] + ' ' + (dailyTarget <= (caloriesPerDay[date] || 0))}
+                    secondary={description || ' '} // Empty string switches visual styling
                     secondaryTypographyProps={{
                       style: { whiteSpace: 'pre-line' }
                     }}

@@ -1,5 +1,6 @@
 import qs from 'querystring';
 import {
+  extendedWithCreatedUpdated,
   internalRequest,
   JWT_ALICE_ADMIN, JWT_BOB_MANAGER,
   JWT_CAROL_REGULAR_USER,
@@ -13,6 +14,7 @@ import {
   yesterdayLunchMealSample,
 } from '../qa/samples/Meal.samples';
 import { MealsListDto } from '../dto/MealsListDto';
+import { carolRegularUserSample, danRegularUserSample } from '../qa/samples/User.samples';
 
 beforeEach(async () => {
   await resetDatabase();
@@ -170,6 +172,89 @@ describe('/meals/', () => {
     expect(data).toEqual({
       error: 'FORBIDDEN',
       message: 'Must be regular user or admin',
+    });
+  });
+});
+
+
+describe('POST /meals/', () => {
+
+  // ##### Positive ####
+
+  it('creates for admin', async () => {
+    // Arrange
+    // Act
+    const { status, data } = await internalRequest(JWT_ALICE_ADMIN, 'POST', '/meals/', {
+      ...yesterdayBreakfastMealSample,
+      userId: danRegularUserSample.id, // Try to save to Dan
+      id: undefined,
+      unexistent: 'the value', // Ensure it ignores unexistent fields
+    });
+
+    // Assert
+    expect(status).toBe(200);
+    expect(data).toEqual({
+      ...extendedWithCreatedUpdated(yesterdayBreakfastMealSample),
+      userId: danRegularUserSample.id, // It is Dan, not Alice
+      id: expect.anything(),
+    });
+  });
+
+  it('creates for the regular user', async () => {
+    // Arrange
+    // Act
+    const { status, data } = await internalRequest(JWT_CAROL_REGULAR_USER, 'POST', '/meals/', {
+      ...yesterdayBreakfastMealSample,
+      userId: danRegularUserSample.id, // Try to save to Dan
+      id: undefined,
+    });
+
+    // Assert
+    expect(status).toBe(200);
+    expect(data).toEqual({
+      ...extendedWithCreatedUpdated(yesterdayBreakfastMealSample),
+      userId: carolRegularUserSample.id, // Not Dan
+      id: expect.anything(),
+    });
+  });
+
+
+  // ##### Negative ####
+
+  it('prohibits for guest', async () => {
+    // Arrange
+    // Act
+    const { status, data } = await internalRequest(JWT_GUEST, 'POST', '/meals/', {
+      ...yesterdayBreakfastMealSample,
+      id: undefined,
+    });
+
+    // Assert
+    expect(status).toBe(403);
+    expect(data).toEqual({
+      error: 'FORBIDDEN',
+      message: 'Must be regular user or admin',
+    });
+  });
+
+  it('fails with lack of fields', async () => {
+    // Arrange
+    // Act
+    const { status, data } = await internalRequest(JWT_ALICE_ADMIN, 'POST', '/meals/', {
+      contents: yesterdayBreakfastMealSample.contents,
+    });
+
+    // Assert
+    expect(status).toBe(400);
+    expect(data).toEqual({
+      error: 'VALIDATION_FAILED',
+      message: 'Validation Error',
+      errors: {
+        calories: 'Meal.calories cannot be null',
+        date: 'Meal.date cannot be null',
+        time: 'Meal.time cannot be null',
+        userId: 'Meal.userId cannot be null',
+      },
     });
   });
 });
