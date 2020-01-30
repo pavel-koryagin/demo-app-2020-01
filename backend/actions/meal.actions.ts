@@ -3,20 +3,26 @@ import { AsyncRequestHandler } from '../assembleServer';
 import { mealsSample } from '../../src/qa/samples/Meal.samples';
 import MealOrm from '../model/MealOrm';
 import Auth from '../utils/Auth';
-import { requireDate, requireTime } from '../../src/utils/routingUtils';
+import { requireDate, requireTime, requireUint } from '../../src/utils/routingUtils';
 import { MealsFilterDto } from '../../src/dto/MealsFilterDto';
+import { DEFAULT_PAGE_SIZE, PaginationParamsDto } from '../../src/dto/PaginationDto';
+import { FindOptions } from 'sequelize/types/lib/model';
 
 function getListParams({
   dateStart,
   dateEnd,
   timeStart,
   timeEnd,
-}: any) {
+  page,
+  pageSize,
+}: any): MealsFilterDto & PaginationParamsDto {
   return {
     dateStart: dateStart ? requireDate(dateStart) : null,
     dateEnd: dateEnd ? requireDate(dateEnd) : null,
     timeStart: timeStart ? requireTime(timeStart) : null,
     timeEnd: timeEnd ? requireTime(timeEnd) : null,
+    page: page ? requireUint(page) : 0,
+    pageSize: pageSize ? requireUint(pageSize) : DEFAULT_PAGE_SIZE,
   }
 }
 
@@ -30,9 +36,12 @@ export const listMealsAction: AsyncRequestHandler = async req => {
     dateEnd,
     timeStart,
     timeEnd,
-  }: MealsFilterDto = getListParams(req.query);
+    page,
+    pageSize,
+  } = getListParams(req.query);
 
   const where: any = {};
+  const options: FindOptions = { where };
 
   // Apply auth limits
   if (auth.isRegularUser()) {
@@ -51,8 +60,15 @@ export const listMealsAction: AsyncRequestHandler = async req => {
     if (timeEnd) where.time[Op.lte] = timeEnd;
   }
 
+  // Apply pagination
+  options.offset = page * pageSize;
+  options.limit = pageSize;
+
+  // Apply order
+  options.order = [['date', 'DESC'], ['time', 'DESC']];
+
   // Query
-  return MealOrm.findAll({ where });
+  return MealOrm.findAll(options);
 }
 
 export const getMealAction: AsyncRequestHandler = async req => {

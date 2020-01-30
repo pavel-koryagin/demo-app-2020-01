@@ -42,6 +42,28 @@ describe('/meals/', () => {
     expect(data).toContainEqual(expect.objectContaining(mealsSample[0]));
   });
 
+  it('lists page 0 for regular user', async () => {
+    // Arrange
+    // Act
+    const { status, data } = await internalRequest(JWT_CAROL_REGULAR_USER, 'GET', '/meals/?pageSize=3');
+
+    // Assert
+    expect(status).toBe(200);
+    expect(data.length).toBe(3);
+    expect(data).toContainEqual(expect.objectContaining(todayLunchMealSample));
+  });
+
+  it('lists page 1 for regular user', async () => {
+    // Arrange
+    // Act
+    const { status, data } = await internalRequest(JWT_CAROL_REGULAR_USER, 'GET', '/meals/?pageSize=3&page=1');
+
+    // Assert
+    expect(status).toBe(200);
+    expect(data.length).toBe(2);
+    expect(data).toContainEqual(expect.objectContaining(yesterdayBreakfastMealSample));
+  });
+
   it('applies filter by date and time', async () => {
     // Arrange
     // Act

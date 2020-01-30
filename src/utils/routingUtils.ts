@@ -10,6 +10,16 @@ export function requireId(value: string | undefined): number {
   return Number(value);
 }
 
+export function requireUint(value: string | undefined): number {
+  if (!value) {
+    throw new BadRequestException('Missing required number parameter');
+  }
+  if (!/^\d+$/.test(value)) {
+    throw new BadRequestException('Incorrect number parameter value');
+  }
+  return Number(value);
+}
+
 export function requireDate(value: string | undefined): string {
   if (!value) {
     throw new BadRequestException('Missing required date parameter');
