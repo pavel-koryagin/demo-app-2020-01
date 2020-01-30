@@ -7,6 +7,7 @@ import {
 } from '../../.tests/apiFramework';
 import { resetDatabase } from '../../backend/model/resetDatabase';
 import {
+  carolSampleCaloriesPerDay,
   mealsSample, todayLunchMealSample, yesterdayBreakfastMealSample,
   yesterdayDinnerMealSample,
   yesterdayLunchMealSample,
@@ -53,10 +54,7 @@ describe('/meals/', () => {
     // Assert
     expect(status).toBe(200);
     const { items, caloriesPerDay }: MealsListDto = data;
-    expect(caloriesPerDay).toEqual({
-      '2020-01-27': 1700,
-      '2020-01-28': 2450,
-    });
+    expect(caloriesPerDay).toEqual(carolSampleCaloriesPerDay);
     expect(items.length).toBe(5);
     expect(items).toContainEqual(expect.objectContaining(mealsSample[0]));
   });

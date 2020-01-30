@@ -1,4 +1,5 @@
 import { Meal } from '../../model/Meal.model';
+import { CaloriesPerDay } from '../../dto/MealsListDto';
 
 const carolRegularUserId = 3;
 const danRegularUserId = 4;
@@ -59,3 +60,8 @@ export const mealsSample = [
     userId: danRegularUserId,
   },
 ];
+
+export const carolSampleCaloriesPerDay: CaloriesPerDay = {
+  '2020-01-27': 1700,
+  '2020-01-28': 2450,
+};

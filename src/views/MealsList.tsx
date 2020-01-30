@@ -23,6 +23,7 @@ import MealsListFilter  from './MealsListFilter';
 import { MealsFilterDto } from '../dto/MealsFilterDto';
 import { PaginationStatusDto } from '../dto/PaginationDto';
 import Pagination from './Pagination';
+import { CaloriesPerDay } from '../dto/MealsListDto';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,13 +34,18 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'right',
       width: 36,
       flex: 'none',
-      paddingTop: '4px', // Match to Primary baseline
       paddingRight: theme.spacing(2),
     },
     fab: {
       position: 'fixed',
       bottom: theme.spacing(2),
       right: theme.spacing(2),
+    },
+    good: {
+      color: theme.palette.success.main,
+    },
+    bad: {
+      color: theme.palette.error.main,
     },
   }),
 );
@@ -48,6 +54,8 @@ interface Props {
   meals: Meal[],
   filter: MealsFilterDto,
   pagination: PaginationStatusDto,
+  caloriesPerDay: CaloriesPerDay,
+  dailyTarget: number,
   onSetPage: (page: number) => void,
   onFilter: (params: MealsFilterDto) => void,
   onCreate: () => void,
@@ -58,6 +66,8 @@ const MealsList: React.FC<Props> = ({
   meals,
   filter,
   pagination,
+  caloriesPerDay,
+  dailyTarget,
   onSetPage,
   onFilter,
   onCreate,
@@ -91,7 +101,7 @@ const MealsList: React.FC<Props> = ({
         {_map(byDate, (dateMeals, date) => (
           <React.Fragment key={date}>
             <ListSubheader>{moment(date).format('dddd, MMMM Do, YYYY')}</ListSubheader>
-            {dateMeals.map(({ id, time, contents }) => {
+            {dateMeals.map(({ id, time, contents, calories }) => {
               const { title, description } = splitMealContents(contents);
               return (
                 <ListItem
@@ -102,12 +112,16 @@ const MealsList: React.FC<Props> = ({
                   alignItems="flex-start"
                 >
                   <ListItemText
+                    primary={calories}
+                    primaryTypographyProps={{
+                      className: dailyTarget >= (caloriesPerDay[date] || 0) ? classes.good : classes.bad,
+                    }}
                     secondary={moment(time, 'HH:mm').format('h:mm a')}
                     classes={{ root: classes.date }}
                   />
                   <ListItemText
                     primary={title}
-                    secondary={description}
+                    secondary={description + ' ' + dailyTarget + ' ' + caloriesPerDay[date] + ' ' + (dailyTarget <= (caloriesPerDay[date] || 0))}
                     secondaryTypographyProps={{
                       style: { whiteSpace: 'pre-line' }
                     }}

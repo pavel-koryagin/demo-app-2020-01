@@ -3,15 +3,19 @@ import { mealsSample } from '../qa/samples/Meal.samples';
 import { Meal } from '../model/Meal.model';
 import { requestBackend } from './axios';
 import { MealsFilterDto } from '../dto/MealsFilterDto';
-import { ListDto } from '../dto/ListDto';
+import { CaloriesPerDay, MealsListDto } from '../dto/MealsListDto';
 
 async function emulateCall(message: string) {
   console.log('API server:', message);
   await new Promise(resolve => setTimeout(resolve, 1500));
 }
 
-export async function apiListMeals(filter?: MealsFilterDto, page?: number): Promise<ListDto<Meal>> {
-  let url = '/meals/?pageSize=3';
+interface MealsListWithCaloriesDto extends MealsListDto {
+  caloriesPerDay: CaloriesPerDay;
+}
+
+export async function apiListMeals(filter?: MealsFilterDto, page?: number): Promise<MealsListWithCaloriesDto> {
+  let url = '/meals/?pageSize=20&getCalories=yes';
   if (page) {
     url += '&page=' + page;
   }

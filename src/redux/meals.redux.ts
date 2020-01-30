@@ -16,17 +16,20 @@ import {
 import { RootState } from './rootReducer';
 import { MealsFilterDto, noMealsFilter } from '../dto/MealsFilterDto';
 import { PaginationStatusDto } from '../dto/PaginationDto';
+import { CaloriesPerDay } from '../dto/MealsListDto';
 
 type MealsState = {
   filter: MealsFilterDto,
   pagination: PaginationStatusDto | null,
   list: Meal[] | ErrorCapsule | null,
+  caloriesPerDay: CaloriesPerDay | null,
   edit: Partial<Meal> | ErrorCapsule | null,
 }
 
 const initialState: MealsState = {
   filter: noMealsFilter,
   pagination: null,
+  caloriesPerDay: null,
   list: null,
   edit: null,
 };
@@ -35,9 +38,14 @@ const issuesDisplaySlice = createSlice({
   name: 'meals',
   initialState,
   reducers: {
-    setMeals(state, action: PayloadAction<{ items: Meal[] | ErrorCapsule | null, pagination: PaginationStatusDto | null }>) {
+    setMeals(state, action: PayloadAction<{
+      items: Meal[] | ErrorCapsule | null,
+      pagination: PaginationStatusDto | null,
+      caloriesPerDay: CaloriesPerDay | null,
+    }>) {
       state.list = action.payload.items;
       state.pagination = action.payload.pagination;
+      state.caloriesPerDay = action.payload.caloriesPerDay;
     },
     setMealToEdit(state, action: PayloadAction<Partial<Meal> | ErrorCapsule | null>) {
       state.edit = action.payload;
@@ -90,26 +98,29 @@ export const loadMeals = (
 ): AppThunk => async (dispatch, getState) => {
   const { meals: { filter, pagination: prevPagination } } = getState();
   try {
-    const { items: meals, pagination } = await apiListMeals(
+    const { items: meals, pagination, caloriesPerDay } = await apiListMeals(
       filter,
       prevPagination ? prevPagination.page : 0
     );
 
-    dispatch(setMeals({ items: meals, pagination }));
+    dispatch(setMeals({ items: meals, pagination, caloriesPerDay }));
   } catch (err) {
     dispatch(setMeals({
       items: new ErrorCapsule(err, () => {
-        dispatch(setMeals({ items: initialState.list, pagination: initialState.pagination }));
+        dispatch(setMeals({
+          items: null,
+          pagination: null,
+          caloriesPerDay: null,
+        }));
         dispatch(loadMeals());
       }),
       pagination: null,
+      caloriesPerDay: null,
     }));
   }
 };
 
-export const selectAllMeals = (state: RootState) => state.meals.list;
-export const selectMealsFilter = (state: RootState) => state.meals.filter;
-export const selectMealsPagination = (state: RootState) => state.meals.pagination;
+export const selectMealsModule = (state: RootState) => state.meals;
 
 export const resetMealToEdit = () => setMealToEdit(null);
 
