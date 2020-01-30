@@ -36,6 +36,11 @@ export default class UserOrm extends BaseOrm implements User {
   validatePassword(value: string): boolean {
     return this.password === value; // TODO: Implement crypt
   }
+
+  setPassword(value: string) {
+    this.salt = 'x';
+    this.password = value; // TODO: Implement crypt
+  }
 }
 
 UserOrm.init({

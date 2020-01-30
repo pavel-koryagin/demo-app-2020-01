@@ -124,7 +124,7 @@ async function getRecordProlog(req: Request) {
   }
 
   // Check auth limits
-  if (meal.userId !== auth.id) {
+  if (!auth.isAdmin() && meal.userId !== auth.id) {
     throw new ForbiddenException();
   }
 

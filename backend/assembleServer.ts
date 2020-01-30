@@ -9,6 +9,12 @@ import BadRequestException from '../src/errors/BadRequestException';
 import { ValidationError } from 'sequelize';
 import ForbiddenException from '../src/errors/ForbiddenException';
 import NotFoundException from '../src/errors/NotFoundException';
+import {
+  createUserAction, deleteUserAction,
+  getUserAction,
+  listUsersAction,
+  updateUserAction,
+} from './actions/user.actions';
 
 type Signals = NodeJS.Signals;
 
@@ -75,6 +81,12 @@ export function assembleServer(): Express {
   app.post('/meals/', wrapAsyncAction(createMealAction));
   app.put('/meals/:id/', wrapAsyncAction(updateMealAction));
   app.delete('/meals/:id/', wrapAsyncAction(deleteMealAction));
+
+  app.get('/users/', wrapAsyncAction(listUsersAction));
+  app.get('/users/:id/', wrapAsyncAction(getUserAction));
+  app.post('/users/', wrapAsyncAction(createUserAction));
+  app.put('/users/:id/', wrapAsyncAction(updateUserAction));
+  app.delete('/users/:id/', wrapAsyncAction(deleteUserAction));
 
   // Add terminating 404
   app.use((req, res) => {

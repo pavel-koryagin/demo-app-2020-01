@@ -97,7 +97,7 @@ export default class Auth {
   }
 
   requireManagerOrAdmin() {
-    if (!this.isRegularUser() && !this.isAdmin()) {
+    if (!this.isManager() && !this.isAdmin()) {
       throw new ForbiddenException('Must be manager or admin');
     }
   }

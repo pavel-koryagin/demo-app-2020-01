@@ -57,4 +57,5 @@ export const usersSample = [
   aliceAdminUserSample,
   bobManagerUserSample,
   carolRegularUserSample,
+  danRegularUserSample,
 ];
