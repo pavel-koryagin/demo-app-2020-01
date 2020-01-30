@@ -5,6 +5,7 @@ import StorybookPage from '../../.storybook/StorybookPage';
 import StorybookSlot from '../../.storybook/StorybookSlot';
 import MealsList from './MealsList';
 import { mealsSample } from '../qa/samples/Meal.samples';
+import { noMealsFilter } from '../dto/MealsFilterDTO';
 
 storiesOf('Pages|Meals', module)
   .add('List', () => (
@@ -12,6 +13,8 @@ storiesOf('Pages|Meals', module)
       <StorybookSlot>
         <MealsList
           meals={mealsSample}
+          filter={noMealsFilter}
+          onFilter={action('onFilter')}
           onCreate={action('onCreate')}
           onDelete={action('onDelete')}
         />
@@ -19,6 +22,8 @@ storiesOf('Pages|Meals', module)
       <StorybookSlot height={400}>
         <MealsList
           meals={[]}
+          filter={noMealsFilter}
+          onFilter={action('onFilter')}
           onCreate={action('onCreate')}
           onDelete={action('onDelete')}
         />

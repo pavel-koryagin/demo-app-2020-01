@@ -3,7 +3,13 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import LayoutWidget from '../widgets/LayoutWidget';
 import MealsList from '../views/MealsList';
-import { deleteMeal, loadMeals, selectAllMeals } from '../redux/meals.redux';
+import {
+  deleteMeal,
+  loadMeals,
+  selectAllMeals,
+  selectMealsFilter,
+  setFilter,
+} from '../redux/meals.redux';
 import LoaderWidget from '../widgets/LoaderWidget';
 import ErrorCapsule from '../errors/ErrorCapsule';
 import PageLoadFailedWidget from '../widgets/PageLoadFailedWidget';
@@ -14,6 +20,7 @@ const MealsListPage: React.FC = () => {
 
   // Query state
   const meals = useSelector(selectAllMeals);
+  const filter = useSelector(selectMealsFilter);
 
   // Require meals
   useEffect(() => {
@@ -31,6 +38,8 @@ const MealsListPage: React.FC = () => {
     <LayoutWidget>
       <MealsList
         meals={meals}
+        filter={filter}
+        onFilter={value => dispatch(setFilter(value))}
         onCreate={() => history.push('/meals/new/')}
         onDelete={id => dispatch(deleteMeal(id))}
       />

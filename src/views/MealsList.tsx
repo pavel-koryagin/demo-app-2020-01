@@ -9,14 +9,24 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
 import Fab from '@material-ui/core/Fab';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Meal, splitMealContents } from '../model/Meal.model';
 import { useDialog } from '../widgets/DialogWidget';
+import MealsListFilter  from './MealsListFilter';
+import { MealsFilterDTO } from '../dto/MealsFilterDTO';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    subHeader: {
+      background: theme.palette.background.default,
+    },
     date: {
       textAlign: 'right',
       width: 36,
@@ -34,12 +44,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   meals: Meal[],
+  filter: MealsFilterDTO,
+  onFilter: (params: MealsFilterDTO) => void,
   onCreate: () => void,
   onDelete: (id: number) => void,
 }
 
 const MealsList: React.FC<Props> = ({
   meals,
+  filter,
+  onFilter,
   onCreate,
   onDelete,
 }: Props) => {
@@ -54,6 +68,18 @@ const MealsList: React.FC<Props> = ({
 
   return (
     <>
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Filter</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <MealsListFilter {...filter} onChange={onFilter} />
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
       <List>
         {meals.length === 0 && <ListSubheader>No meals so far</ListSubheader>}
         {_map(byDate, (dateMeals, date) => (

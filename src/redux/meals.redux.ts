@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import moment from 'moment';
 import _filter from 'lodash/filter';
 import _isPlainObject from 'lodash/isPlainObject';
+import _isEqual from 'lodash/isEqual';
 import { AppThunk } from './store';
 import ErrorCapsule from '../errors/ErrorCapsule';
 import { Meal } from '../model/Meal.model';
@@ -13,15 +14,16 @@ import {
   apiUpdateMeal,
 } from '../api/meals.api';
 import { RootState } from './rootReducer';
+import { MealsFilterDTO, noMealsFilter } from '../dto/MealsFilterDTO';
 
 type MealsState = {
-  deleting: Meal[],
+  filter: MealsFilterDTO,
   list: Meal[] | ErrorCapsule | null,
   edit: Partial<Meal> | ErrorCapsule | null,
 }
 
 const initialState: MealsState = {
-  deleting: [],
+  filter: noMealsFilter,
   list: null,
   edit: null,
 };
@@ -54,6 +56,9 @@ const issuesDisplaySlice = createSlice({
         state.list = _filter(state.list, ({ id }) => id !== action.payload);
       }
     },
+    onFilterChanged(state, action: PayloadAction<MealsFilterDTO>) {
+      state.filter = action.payload;
+    },
   }
 });
 
@@ -63,14 +68,16 @@ const {
   onMealCreated,
   onMealUpdated,
   onMealDeleted,
+  onFilterChanged,
 } = issuesDisplaySlice.actions;
 
 export default issuesDisplaySlice.reducer;
 
 export const loadMeals = (
-): AppThunk => async dispatch => {
+): AppThunk => async (dispatch, getState) => {
+  const { meals: { filter } } = getState();
   try {
-    const meals = await apiListMeals();
+    const meals = await apiListMeals(filter);
 
     dispatch(setMeals(meals));
   } catch (err) {
@@ -81,7 +88,8 @@ export const loadMeals = (
   }
 };
 
-export const selectAllMeals = (state: RootState): Meal[] | ErrorCapsule | null => state.meals.list;
+export const selectAllMeals = (state: RootState) => state.meals.list;
+export const selectMealsFilter = (state: RootState) => state.meals.filter;
 
 export const resetMealToEdit = () => setMealToEdit(null);
 
@@ -130,4 +138,14 @@ export const deleteMeal = (
   // TODO: Add action progress and error indication
   await apiDeleteMeal(id);
   dispatch(onMealDeleted(id));
+};
+
+export const setFilter = (
+  value: MealsFilterDTO,
+): AppThunk => async (dispatch, getState) => {
+  const { meals: { filter } } = getState();
+  if (!_isEqual(filter, value)) {
+    dispatch(onFilterChanged(value));
+    dispatch(loadMeals());
+  }
 };

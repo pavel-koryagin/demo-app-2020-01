@@ -27,5 +27,23 @@ storiesOf('Pages|Meals', module)
           onChange={action('onChange')}
         />
       </StorybookSlot>
+      <StorybookSlot width={500}>
+        <MealsListFilter
+          dateStart="2020-01-27"
+          dateEnd="2020-01-28"
+          timeStart="10:00"
+          timeEnd="16:00"
+          onChange={action('onChange')}
+        />
+      </StorybookSlot>
+      <StorybookSlot width={600}>
+        <MealsListFilter
+          dateStart="2020-01-27"
+          dateEnd="2020-01-28"
+          timeStart="10:00"
+          timeEnd="16:00"
+          onChange={action('onChange')}
+        />
+      </StorybookSlot>
     </StorybookPage>
   ))
