@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import Sequelize, { Op } from 'sequelize';
 import { AsyncRequestHandler } from '../assembleServer';
 import { mealsSample } from '../../src/qa/samples/Meal.samples';
 import MealOrm from '../model/MealOrm';
@@ -7,8 +7,7 @@ import { requireDate, requireTime, requireUint } from '../../src/utils/routingUt
 import { MealsFilterDto } from '../../src/dto/MealsFilterDto';
 import { DEFAULT_PAGE_SIZE, PaginationParamsDto } from '../../src/dto/PaginationDto';
 import { FindOptions } from 'sequelize/types/lib/model';
-import { ListDto } from '../../src/dto/ListDto';
-import { Meal } from '../../src/model/Meal.model';
+import { CaloriesPerDay, MealsListDto } from '../../src/dto/MealsListDto';
 
 function getListParams({
   dateStart,
@@ -17,7 +16,8 @@ function getListParams({
   timeEnd,
   page,
   pageSize,
-}: any): MealsFilterDto & PaginationParamsDto {
+  getCalories,
+}: any): MealsFilterDto & PaginationParamsDto & { getCalories: boolean } {
   return {
     dateStart: dateStart ? requireDate(dateStart) : null,
     dateEnd: dateEnd ? requireDate(dateEnd) : null,
@@ -25,6 +25,7 @@ function getListParams({
     timeEnd: timeEnd ? requireTime(timeEnd) : null,
     page: page ? requireUint(page) : 0,
     pageSize: pageSize ? requireUint(pageSize) : DEFAULT_PAGE_SIZE,
+    getCalories: getCalories === 'yes',
   }
 }
 
@@ -32,7 +33,7 @@ export const listMealsAction: AsyncRequestHandler = async req => {
   const auth = await Auth.getFromRequest(req);
   auth.requireRegularUserOrAdmin();
 
-  // Decode params
+  // Decode and sanitize params
   const {
     dateStart,
     dateEnd,
@@ -40,6 +41,7 @@ export const listMealsAction: AsyncRequestHandler = async req => {
     timeEnd,
     page,
     pageSize,
+    getCalories,
   } = getListParams(req.query);
 
   const where: any = {};
@@ -70,14 +72,39 @@ export const listMealsAction: AsyncRequestHandler = async req => {
   options.order = [['date', 'DESC'], ['time', 'DESC']];
 
   // Query
-  return {
+  const result: MealsListDto = {
     items: await MealOrm.findAll(options),
     pagination: {
       page,
       pageSize,
       totalSize: await MealOrm.count({ where }),
     },
-  } as ListDto<Meal>;
+  };
+
+  // Calculate calories per day
+  if (getCalories) {
+    const caloriesPerDay: CaloriesPerDay = {};
+
+    // We cannot rely on extracted data, because pagination could split the day so query DB one more time
+    const dates = new Set(result.items.map(({ date }) => date));
+    const stats: { date: string, total: number }[] = await MealOrm.findAll({
+      attributes: [
+        'date',
+        [Sequelize.fn('sum', Sequelize.col('calories')), 'total'],
+      ],
+      where: { ...where, date: Array.from(dates) },
+      group: ['date'],
+      raw: true,
+    });
+
+    stats.forEach(({ date, total }) => {
+      caloriesPerDay[date] = total;
+    });
+
+    result.caloriesPerDay = caloriesPerDay;
+  }
+
+  return result;
 }
 
 export const getMealAction: AsyncRequestHandler = async req => {

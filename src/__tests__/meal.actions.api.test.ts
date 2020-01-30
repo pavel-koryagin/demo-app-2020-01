@@ -11,8 +11,7 @@ import {
   yesterdayDinnerMealSample,
   yesterdayLunchMealSample,
 } from '../qa/samples/Meal.samples';
-import { ListDto } from '../dto/ListDto';
-import { Meal } from '../model/Meal.model';
+import { MealsListDto } from '../dto/MealsListDto';
 
 beforeEach(async () => {
   await resetDatabase();
@@ -29,7 +28,7 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    const { items }: ListDto<Meal> = data;
+    const { items }: MealsListDto = data;
     expect(items.length).toBe(mealsSample.length);
     expect(items).toContainEqual(expect.objectContaining(mealsSample[0]));
   });
@@ -41,7 +40,23 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    const { items }: ListDto<Meal> = data;
+    const { items }: MealsListDto = data;
+    expect(items.length).toBe(5);
+    expect(items).toContainEqual(expect.objectContaining(mealsSample[0]));
+  });
+
+  it('lists with statistics', async () => {
+    // Arrange
+    // Act
+    const { status, data } = await internalRequest(JWT_CAROL_REGULAR_USER, 'GET', '/meals/?getCalories=yes');
+
+    // Assert
+    expect(status).toBe(200);
+    const { items, caloriesPerDay }: MealsListDto = data;
+    expect(caloriesPerDay).toEqual({
+      '2020-01-27': 1700,
+      '2020-01-28': 2450,
+    });
     expect(items.length).toBe(5);
     expect(items).toContainEqual(expect.objectContaining(mealsSample[0]));
   });
@@ -53,7 +68,7 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    const { items, pagination }: ListDto<Meal> = data;
+    const { items, pagination }: MealsListDto = data;
     expect(pagination).toEqual({
       page: 0,
       pageSize: 3,
@@ -70,7 +85,7 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    const { items, pagination }: ListDto<Meal> = data;
+    const { items, pagination }: MealsListDto = data;
     expect(pagination).toEqual({
       page: 1,
       pageSize: 3,
@@ -92,7 +107,7 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    const { items }: ListDto<Meal> = data;
+    const { items }: MealsListDto = data;
     expect(items.length).toBe(2);
     expect(items).toContainEqual(expect.objectContaining(yesterdayLunchMealSample));
     expect(items).toContainEqual(expect.objectContaining(yesterdayDinnerMealSample));
@@ -108,7 +123,7 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    const { items }: ListDto<Meal> = data;
+    const { items }: MealsListDto = data;
     expect(items.length).toBe(3);
     expect(items).toContainEqual(expect.objectContaining(yesterdayLunchMealSample));
     expect(items).toContainEqual(expect.objectContaining(yesterdayDinnerMealSample));
@@ -125,7 +140,7 @@ describe('/meals/', () => {
 
     // Assert
     expect(status).toBe(200);
-    const { items }: ListDto<Meal> = data;
+    const { items }: MealsListDto = data;
     expect(items.length).toBe(2);
     expect(items).toContainEqual(expect.objectContaining(yesterdayBreakfastMealSample));
     expect(items).toContainEqual(expect.objectContaining(yesterdayLunchMealSample));
