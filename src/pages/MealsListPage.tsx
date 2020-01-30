@@ -6,7 +6,7 @@ import {
   deleteMeal,
   loadMeals,
   selectMealsModule,
-  setFilter, setPage,
+  setFilter, setMealsListPage,
 } from '../redux/meals.redux';
 import LoaderWidget from '../widgets/LoaderWidget';
 import ErrorCapsule from '../errors/ErrorCapsule';
@@ -43,7 +43,7 @@ const MealsListPage: React.FC = () => {
       pagination={pagination}
       caloriesPerDay={caloriesPerDay}
       dailyTarget={2000} // TODO: Implement in auth.redux
-      onSetPage={value => dispatch(setPage(value))}
+      onSetPage={value => dispatch(setMealsListPage(value))}
       onFilter={value => dispatch(setFilter(value))}
       onCreate={() => history.push('/meals/new/')}
       onDelete={id => dispatch(deleteMeal(id))}

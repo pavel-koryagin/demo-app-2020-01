@@ -199,7 +199,7 @@ export const setFilter = (
   }
 };
 
-export const setPage = (
+export const setMealsListPage = (
   value: number,
 ): AppThunk => async (dispatch, getState) => {
   const { meals: { pagination } } = getState();

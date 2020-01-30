@@ -100,7 +100,9 @@ const MealsList: React.FC<Props> = ({
         {meals.length === 0 && <ListSubheader>No meals so far</ListSubheader>}
         {_map(byDate, (dateMeals, date) => (
           <React.Fragment key={date}>
-            <ListSubheader>{moment(date).format('dddd, MMMM Do, YYYY')}</ListSubheader>
+            <ListSubheader className={classes.subHeader}>
+              {moment(date).format('dddd, MMMM Do, YYYY')}
+            </ListSubheader>
             {dateMeals.map(({ id, time, contents, calories }) => {
               const { title, description } = splitMealContents(contents);
               return (
