@@ -8,11 +8,13 @@ const genericUser = {
   lastName: 'Smith',
   role: UserRole.Regular,
   dailyTarget: null,
+};
 
-  // Backend only
-  // password: '',
-  // salt: '',
-  // restoreToken: null,
+export const usersSamplePassword = '123';
+
+export const backendUserExtrasSample = {
+  password: usersSamplePassword, // TODO: Crypt
+  salt: '',
 };
 
 export const aliceAdminUserSample: User = {

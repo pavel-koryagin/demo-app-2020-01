@@ -3,6 +3,12 @@ import express, { Express, RequestHandler, NextFunction, Request, Response } fro
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { createMealAction, deleteMealAction, getMealAction, listMealsAction, updateMealAction } from './actions/meal.actions';
+import { authLoginAction } from './actions/auth.action';
+import UnexpectedCaseException from '../src/errors/UnexpectedCaseException';
+import BadRequestException from '../src/errors/BadRequestException';
+import { ValidationError } from 'sequelize';
+import ForbiddenException from '../src/errors/ForbiddenException';
+import NotFoundException from '../src/errors/NotFoundException';
 
 type Signals = NodeJS.Signals;
 
@@ -16,9 +22,38 @@ function wrapAsyncAction(fn: AsyncRequestHandler): RequestHandler {
       .then(value => {
         if (value !== undefined) {
           res.json(value);
+        } else {
+          if (!res.headersSent) {
+            throw new UnexpectedCaseException();
+          }
         }
       })
-      .catch(e => next(e));
+      .catch(e => {
+        if (e instanceof BadRequestException) {
+          res.status(400).json({ error: 'BAD_REQUEST', message: e.message });
+          return;
+        }
+        if (e instanceof ValidationError) {
+          const errors: { [field: string]: string } = {};
+          e.errors.forEach(error => {
+            if (!errors[error.path]) {
+              errors[error.path] = error.message;
+            }
+          });
+          res.status(400).json({ error: 'VALIDATION_FAILED', message: 'Validation Error', errors });
+          return;
+        }
+        if (e instanceof ForbiddenException) {
+          res.status(403).json({ error: 'FORBIDDEN', message: e.message });
+          return;
+        }
+        if (e instanceof NotFoundException) {
+          res.status(404).json({ error: 'NOT_FOUND', message: e.message });
+          return;
+        }
+        res.status(500).json({ error: 'SERVER_ERROR', message: 'Internal Server Error' });
+        console.error(e);
+      });
   };
 }
 
@@ -32,6 +67,8 @@ export function assembleServer(): Express {
   app.use(bodyParser.urlencoded({ extended: true }));
 
   // Bind actions
+  app.post('/auth/login/', wrapAsyncAction(authLoginAction));
+
   app.get('/meals/', wrapAsyncAction(listMealsAction));
   app.get('/meals/:id/', wrapAsyncAction(getMealAction));
   app.post('/meals/', wrapAsyncAction(createMealAction));

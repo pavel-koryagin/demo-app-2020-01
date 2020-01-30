@@ -1,6 +1,8 @@
 import sequelize from './sequelize';
 import { mealsSample } from '../../src/qa/samples/Meal.samples';
-import MealOrm from './Meal.orm';
+import MealOrm from './MealOrm';
+import UserOrm from './UserOrm';
+import { backendUserExtrasSample, usersSample } from '../../src/qa/samples/User.samples';
 
 export async function resetDatabase() {
   // Reset structure
@@ -8,4 +10,8 @@ export async function resetDatabase() {
 
   // Seed with demo data
   await MealOrm.bulkCreate(mealsSample);
+  await UserOrm.bulkCreate(usersSample.map(user => ({
+    ...user,
+    ...backendUserExtrasSample,
+  })));
 }
