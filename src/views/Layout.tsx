@@ -12,6 +12,17 @@ const useStyles = makeStyles((theme: Theme) =>
     active: {
       background: theme.palette.primary.dark,
     },
+    page: {
+      minHeight: '100vh',
+      background: '#eee',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    content: {
+      paddingTop: theme.spacing(1),
+      background: theme.palette.background.default,
+      flex: 1,
+    },
   }),
 );
 
@@ -51,9 +62,10 @@ const Layout: React.FC<Props> = ({
   currentUrl,
   onLogout,
 }: Props) => {
+  const classes = useStyles();
 
   return (
-    <>
+    <Box className={classes.page}>
       <AppBar position="static">
         <Toolbar>
           <Box style={{ flex: 1 }} />
@@ -68,10 +80,10 @@ const Layout: React.FC<Props> = ({
           <Button color="inherit" onClick={e => onLogout()}>Logout</Button>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" classes={{ root: classes.content }}>
         {children}
       </Container>
-    </>
+    </Box>
   );
 };
 
