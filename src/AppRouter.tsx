@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import './views/globals.scss';
 import LayoutWidget from './widgets/LayoutWidget';
+import { UserRole } from './model/UserRole';
+import { selectAuthUser } from './redux/auth.redux';
+import LoaderWidget from './widgets/LoaderWidget';
 import MealsListPage from './pages/MealsListPage';
 import MealEditPage from './pages/MealEditPage';
 import UsersListPage from './pages/UsersListPage';
@@ -11,8 +14,25 @@ import AuthLoginPage from './pages/AuthLoginPage';
 import AuthRegisterPage from './pages/AuthRegisterPage';
 import AuthRestorePasswordPage from './pages/AuthRestorePasswordPage';
 import AuthNewPasswordPage from './pages/AuthNewPasswordPage';
-import { UserRole } from './model/UserRole';
-import { selectAuthUser } from './redux/auth.redux';
+
+const withLayout = (Component: React.ComponentType) => {
+  return (props: any) => (
+    <LayoutWidget>
+      <Suspense fallback={<LoaderWidget />}>
+        <Component {...props} />
+      </Suspense>
+    </LayoutWidget>
+  )
+}
+
+const WrappedAuthLoginPage = withLayout(AuthLoginPage);
+const WrappedAuthRegisterPage = withLayout(AuthRegisterPage);
+const WrappedAuthRestorePasswordPage = withLayout(AuthRestorePasswordPage);
+const WrappedAuthNewPasswordPage = withLayout(AuthNewPasswordPage);
+const WrappedMealsListPage = withLayout(MealsListPage);
+const WrappedMealEditPage = withLayout(MealEditPage);
+const WrappedUsersListPage = withLayout(UsersListPage);
+const WrappedUserEditPage = withLayout(UserEditPage);
 
 const AppRouter: React.FC = () => {
   const user = useSelector(selectAuthUser);
@@ -30,18 +50,18 @@ const AppRouter: React.FC = () => {
   return (
     <Switch>
       {/* Public */}
-      <Route path="/login/" exact component={AuthLoginPage} />
-      <Route path="/register/" exact component={AuthRegisterPage} />
-      <Route path="/restore-password/" exact component={AuthRestorePasswordPage} />
-      <Route path="/restore-password/new/" exact component={AuthNewPasswordPage} />
+      <Route path="/login/" exact component={WrappedAuthLoginPage} />
+      <Route path="/register/" exact component={WrappedAuthRegisterPage} />
+      <Route path="/restore-password/" exact component={WrappedAuthRestorePasswordPage} />
+      <Route path="/restore-password/new/" exact component={WrappedAuthNewPasswordPage} />
 
       {/* Meals */}
-      {route('/', MealsListPage, UserRole.Regular, UserRole.Admin)}
-      {route('/meals/:id/', MealEditPage, UserRole.Regular, UserRole.Admin)}
+      {route('/', WrappedMealsListPage, UserRole.Regular, UserRole.Admin)}
+      {route('/meals/:id/', WrappedMealEditPage, UserRole.Regular, UserRole.Admin)}
 
       {/* Users */}
-      {route('/users/', UsersListPage, UserRole.Manager, UserRole.Admin)}
-      {route('/users/:id/', UserEditPage, UserRole.Manager, UserRole.Admin)}
+      {route('/users/', WrappedUsersListPage, UserRole.Manager, UserRole.Admin)}
+      {route('/users/:id/', WrappedUserEditPage, UserRole.Manager, UserRole.Admin)}
 
       {/* 404 */}
       <Route
