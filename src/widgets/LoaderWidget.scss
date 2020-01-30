@@ -1,0 +1,46 @@
+.loader {
+  $color: blue;
+  height: 100%;
+
+  position: relative;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+
+  &__animation {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    z-index: 1;
+
+    &:after {
+      content: " ";
+      display: block;
+      width: 64px;
+      height: 64px;
+      margin: 8px;
+      border-radius: 50%;
+      border: 6px solid $color;
+      border-color: $color transparent $color transparent;
+      animation: loader__animation 1.2s linear infinite;
+    }
+
+    @keyframes loader__animation {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  &__underlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255,255,255,.9);
+  }
+}

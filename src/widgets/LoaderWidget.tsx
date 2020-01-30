@@ -1,11 +1,12 @@
 import React from 'react';
+import './LoaderWidget.scss';
 
-interface Props {
-}
-
-const LoaderWidget: React.FC<Props> = ({}: Props) => {
+const LoaderWidget: React.FC = () => {
   return (
-    <div>TODO</div>
+    <div className="loader">
+      <div className="loader__animation" />
+      <div className="loader__underlay" />
+    </div>
   );
 };
 
