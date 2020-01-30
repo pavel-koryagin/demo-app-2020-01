@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux'
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import './App.css';
+import './views/globals.scss';
 import store from './redux/store'
 import LayoutWidget from './widgets/LayoutWidget';
 import MealsListPage from './pages/MealsListPage';

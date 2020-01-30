@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import './storybook-decorator.scss';
+import '../src/views/globals.scss';
 import { DialogsProvider } from '../src/widgets/DialogWidget';
 
 export default function StorybookPage({
