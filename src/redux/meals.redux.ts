@@ -14,10 +14,10 @@ import {
   apiUpdateMeal,
 } from '../api/meals.api';
 import { RootState } from './rootReducer';
-import { MealsFilterDTO, noMealsFilter } from '../dto/MealsFilterDTO';
+import { MealsFilterDto, noMealsFilter } from '../dto/MealsFilterDto';
 
 type MealsState = {
-  filter: MealsFilterDTO,
+  filter: MealsFilterDto,
   list: Meal[] | ErrorCapsule | null,
   edit: Partial<Meal> | ErrorCapsule | null,
 }
@@ -56,7 +56,7 @@ const issuesDisplaySlice = createSlice({
         state.list = _filter(state.list, ({ id }) => id !== action.payload);
       }
     },
-    onFilterChanged(state, action: PayloadAction<MealsFilterDTO>) {
+    onFilterChanged(state, action: PayloadAction<MealsFilterDto>) {
       state.filter = action.payload;
     },
   }
@@ -141,7 +141,7 @@ export const deleteMeal = (
 };
 
 export const setFilter = (
-  value: MealsFilterDTO,
+  value: MealsFilterDto,
 ): AppThunk => async (dispatch, getState) => {
   const { meals: { filter } } = getState();
   if (!_isEqual(filter, value)) {

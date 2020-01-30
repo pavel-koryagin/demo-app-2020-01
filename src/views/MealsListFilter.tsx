@@ -6,21 +6,21 @@ import {
 } from '../elements/Form';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { MealsFilterDTO } from '../dto/MealsFilterDTO';
+import { MealsFilterDto } from '../dto/MealsFilterDto';
 
-type Props = MealsFilterDTO & {
-  onChange: (filter: MealsFilterDTO) => void,
+type Props = MealsFilterDto & {
+  onChange: (filter: MealsFilterDto) => void,
 }
 
-function filterChangeEvents(onChange: (filter: MealsFilterDTO) => void) {
-  return (values: MealsFilterDTO) => {
+function filterChangeEvents(onChange: (filter: MealsFilterDto) => void) {
+  return (values: MealsFilterDto) => {
     if (!_isEmpty(values)) { // redux form in the end emits an empty object
       onChange(values);
     }
   };
 }
 
-const Form = defineForm<MealsFilterDTO>();
+const Form = defineForm<MealsFilterDto>();
 
 const MealsListFilter: React.FC<Props> = ({
   dateStart,

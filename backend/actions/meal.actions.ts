@@ -4,6 +4,7 @@ import { mealsSample } from '../../src/qa/samples/Meal.samples';
 import MealOrm from '../model/MealOrm';
 import Auth from '../utils/Auth';
 import { requireDate, requireTime } from '../../src/utils/routingUtils';
+import { MealsFilterDto } from '../../src/dto/MealsFilterDto';
 
 function getListParams({
   dateStart,
@@ -29,7 +30,7 @@ export const listMealsAction: AsyncRequestHandler = async req => {
     dateEnd,
     timeStart,
     timeEnd,
-  } = getListParams(req.query);
+  }: MealsFilterDto = getListParams(req.query);
 
   const where: any = {};
 

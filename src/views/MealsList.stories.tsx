@@ -5,7 +5,7 @@ import StorybookPage from '../../.storybook/StorybookPage';
 import StorybookSlot from '../../.storybook/StorybookSlot';
 import MealsList from './MealsList';
 import { mealsSample } from '../qa/samples/Meal.samples';
-import { noMealsFilter } from '../dto/MealsFilterDTO';
+import { noMealsFilter } from '../dto/MealsFilterDto';
 
 storiesOf('Pages|Meals', module)
   .add('List', () => (

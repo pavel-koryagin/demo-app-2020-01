@@ -20,7 +20,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Meal, splitMealContents } from '../model/Meal.model';
 import { useDialog } from '../widgets/DialogWidget';
 import MealsListFilter  from './MealsListFilter';
-import { MealsFilterDTO } from '../dto/MealsFilterDTO';
+import { MealsFilterDto } from '../dto/MealsFilterDto';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,8 +44,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   meals: Meal[],
-  filter: MealsFilterDTO,
-  onFilter: (params: MealsFilterDTO) => void,
+  filter: MealsFilterDto,
+  onFilter: (params: MealsFilterDto) => void,
   onCreate: () => void,
   onDelete: (id: number) => void,
 }
