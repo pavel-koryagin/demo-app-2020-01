@@ -21,6 +21,8 @@ import { Meal, splitMealContents } from '../model/Meal.model';
 import { useDialog } from '../widgets/DialogWidget';
 import MealsListFilter  from './MealsListFilter';
 import { MealsFilterDto } from '../dto/MealsFilterDto';
+import { PaginationStatusDto } from '../dto/PaginationDto';
+import Pagination from './Pagination';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,6 +47,8 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
   meals: Meal[],
   filter: MealsFilterDto,
+  pagination: PaginationStatusDto,
+  onSetPage: (page: number) => void,
   onFilter: (params: MealsFilterDto) => void,
   onCreate: () => void,
   onDelete: (id: number) => void,
@@ -53,6 +57,8 @@ interface Props {
 const MealsList: React.FC<Props> = ({
   meals,
   filter,
+  pagination,
+  onSetPage,
   onFilter,
   onCreate,
   onDelete,
@@ -120,6 +126,7 @@ const MealsList: React.FC<Props> = ({
           </React.Fragment>
         ))}
       </List>
+      <Pagination {...pagination} onClick={onSetPage} />
       <Fab aria-label="Add" className={classes.fab} color="primary" onClick={e => onCreate()}>
         <AddIcon />
       </Fab>

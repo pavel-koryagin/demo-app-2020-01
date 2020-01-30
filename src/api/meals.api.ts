@@ -10,10 +10,13 @@ async function emulateCall(message: string) {
   await new Promise(resolve => setTimeout(resolve, 1500));
 }
 
-export async function apiListMeals(filter?: MealsFilterDto): Promise<ListDto<Meal>> {
-  let url = '/meals/';
+export async function apiListMeals(filter?: MealsFilterDto, page?: number): Promise<ListDto<Meal>> {
+  let url = '/meals/?pageSize=3';
+  if (page) {
+    url += '&page=' + page;
+  }
   if (filter) {
-    url += '?' + qs.encode(filter as any);
+    url += '&' + qs.encode(filter as any);
   }
   return requestBackend('get', url);
 }

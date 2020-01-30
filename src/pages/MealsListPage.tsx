@@ -7,8 +7,8 @@ import {
   deleteMeal,
   loadMeals,
   selectAllMeals,
-  selectMealsFilter,
-  setFilter,
+  selectMealsFilter, selectMealsPagination,
+  setFilter, setPage,
 } from '../redux/meals.redux';
 import LoaderWidget from '../widgets/LoaderWidget';
 import ErrorCapsule from '../errors/ErrorCapsule';
@@ -21,6 +21,7 @@ const MealsListPage: React.FC = () => {
   // Query state
   const meals = useSelector(selectAllMeals);
   const filter = useSelector(selectMealsFilter);
+  const pagination = useSelector(selectMealsPagination);
 
   // Require meals
   useEffect(() => {
@@ -30,7 +31,7 @@ const MealsListPage: React.FC = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Render loading and errors
-  if (!meals) return <LoaderWidget />;
+  if (!meals || !pagination) return <LoaderWidget />;
   if (meals instanceof ErrorCapsule) return <PageLoadFailedWidget error={meals} />;
 
   // Render
@@ -39,6 +40,8 @@ const MealsListPage: React.FC = () => {
       <MealsList
         meals={meals}
         filter={filter}
+        pagination={pagination}
+        onSetPage={value => dispatch(setPage(value))}
         onFilter={value => dispatch(setFilter(value))}
         onCreate={() => history.push('/meals/new/')}
         onDelete={id => dispatch(deleteMeal(id))}
