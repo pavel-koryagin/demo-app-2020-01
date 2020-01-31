@@ -14,7 +14,7 @@ export const authLoginAction: AsyncRequestHandler = async req => {
 
   // Auth
   const foundUser: UserOrm | null = await UserOrm.findOne({ where: { email: input.email } });
-  if (foundUser && foundUser.validatePassword(input.password)) {
+  if (foundUser && (await foundUser.validatePassword(input.password))) {
     return Auth.getAuthLoginPayload(foundUser);
   }
   throw new ForbiddenException('Email or password do not match');
@@ -26,7 +26,8 @@ export const authRegisterAction: AsyncRequestHandler = async req => {
   user.email = req.body.email;
   user.firstName = req.body.firstName;
   user.lastName = req.body.lastName;
-  user.setPassword(String(req.body.password || ''));
+  // TODO: Validate password complexity. Needs DTO with validation
+  await user.setPassword(String(req.body.password || ''));
   // TODO: Move to validators
   user.dailyTarget = 2000;
   user.role = UserRole.Regular;

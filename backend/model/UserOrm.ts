@@ -4,6 +4,7 @@ import BaseOrm from './BaseOrm';
 import { UserRole } from '../../src/model/UserRole';
 import { User } from '../../src/model/User.model';
 import { BuildOptions } from 'sequelize/types/lib/model';
+import { comparePassword, hashPassword } from '../utils/crypt';
 
 export default class UserOrm extends BaseOrm implements User {
   public id!: number;
@@ -15,7 +16,6 @@ export default class UserOrm extends BaseOrm implements User {
   public role!: UserRole;
   public dailyTarget!: number | null;
   private password!: string;
-  private salt!: string;
 
   protected whiteListedFields = [
     'id',
@@ -33,14 +33,14 @@ export default class UserOrm extends BaseOrm implements User {
     this.fixTypeScriptBomb();
   }
 
-  validatePassword(value: string): boolean {
-    return this.password === value; // TODO: Implement crypt
+  async validatePassword(value: string) {
+    return comparePassword(value, this.password);
   }
 
-  setPassword(value: string) {
-    this.salt = 'x';
+  async setPassword(value: string) {
     if (value) {
-      this.password = value; // TODO: Implement crypt
+      this.password = await hashPassword(value);
+      console.log(this.password);
     }
   }
 }
@@ -68,10 +68,6 @@ UserOrm.init({
     allowNull: true,
   },
   password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  salt: {
     type: DataTypes.STRING,
     allowNull: false,
   },

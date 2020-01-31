@@ -13,8 +13,7 @@ const genericUser = {
 export const usersSamplePassword = '123';
 
 export const backendUserExtrasSample = {
-  password: usersSamplePassword, // TODO: Crypt
-  salt: '',
+  password: '$2b$10$E4bs3k.pXvoWICXEWbaYSOtaY41r7uoyeHHbElQUInZjapZYPV66S', // = usersSamplePassword
 };
 
 export const aliceAdminUserSample: User = {

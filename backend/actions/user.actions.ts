@@ -96,7 +96,8 @@ export const createUserAction: AsyncRequestHandler = async req => {
   const user = new UserOrm();
   user.set(filterInput(auth, req.body));
   user.email = req.body.email;
-  user.setPassword(String(req.body.password || ''));
+  // TODO: Validate password complexity. Needs DTO with validation
+  await user.setPassword(String(req.body.password || ''));
 
   // TODO: Move to validators
   if (user.role === UserRole.Regular && user.dailyTarget == null) {
